@@ -1,6 +1,4 @@
 import { useEffect, useRef } from "react";
-import 'swiper/css';
-import 'swiper/css/effect-fade';
 import { EffectFade } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { ImageSlide } from "./ImageSlide.js";
@@ -24,12 +22,17 @@ export function Signage(props: SignageProps) {
         if (fullScreen) ref.current?.requestFullscreen();
     }, [fullScreen, play]);
 
+    useEffect(() => {
+        if (!play) return;
+        console.log('play items', items)
+    }, [play]);
+
     return <>
-        <div ref={ref} style={{ width, height, maxWidth: width, maxHeight: height, background: "black" }}>
+        <div ref={ref} style={{ width, height, maxWidth: width, maxHeight: height, background: "black", position: "relative" }}>
             <Swiper
                 style={{ width: "100%", height: "100%" }}
                 modules={[EffectFade]}
-                onSlideChange={() => console.log('slide change')}
+                onSlideChange={(swiper) => console.log('slide change to', swiper.activeIndex)}
                 onSwiper={(swiper) => console.log(swiper)}
                 effect="fade"
                 fadeEffect={{

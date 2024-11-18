@@ -9,8 +9,9 @@ export function VideoSlide(props: { src: string }) {
 
     useEffect(() => {
         if (!slide.isActive) return;
+        console.log('play video', src)
         videoRef.current?.play();
-    }, [slide.isActive]);
+    }, [slide.isActive, src]);
 
     function onEnded() {
         swiper.slideNext();

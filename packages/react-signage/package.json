@@ -1,7 +1,13 @@
 {
     "name": "@masa-dev/react-signage",
-    "version": "0.1.0",
+    "version": "0.1.7",
     "description": "This is a react library for signage.",
+    "keywords": [
+        "react",
+        "signage",
+        "video",
+        "image"
+    ],
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "type": "module",
@@ -19,8 +25,7 @@
         "copy:watch": "cpx \"src/**/*.css\" dist --watch",
         "prepublishOnly": "pnpm run build && pnpm run copy"
     },
-    "keywords": [],
-    "author": "",
+    "author": "masa-dev",
     "license": "MIT",
     "dependencies": {
         "swiper": "^11.1.14"
