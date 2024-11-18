@@ -1,3 +1,20 @@
+# React Signage
+
+This is a react library for signage.
+
+- Auto slide image and video with cross fade.
+- Can toggle fullscreen.
+
+
+## Install
+
+```
+npm i @masa-dev/react-signage
+```
+
+## Usage
+
+```typescript
 import { Signage } from '@masa-dev/react-signage'
 import { useState } from 'react'
 
@@ -31,4 +48,8 @@ export default function App() {
         />
     </>
 }
+```
 
+## Lisence
+
+MIT

@@ -1,7 +1,7 @@
 {
     "name": "@masa-dev/react-signage",
     "version": "0.1.0",
-    "description": "",
+    "description": "This is a react library for signage.",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "type": "module",
