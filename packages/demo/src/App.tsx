@@ -12,6 +12,11 @@ export default function App() {
             second: 3,
         },
         {
+            type: 'image',
+            src: '/img2.jpg',
+            second: 2,
+        },
+        {
             type: 'video',
             src: '/video1.mp4'
         }]
