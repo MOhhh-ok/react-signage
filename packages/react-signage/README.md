@@ -4,6 +4,7 @@ This is a react library for signage.
 
 - Auto slide image and video with cross fade.
 - Can toggle fullscreen.
+- If the browser does not support the Fullscreen API, use a pseudo fullscreen display.
 
 
 ## Install
@@ -37,7 +38,13 @@ export default function App() {
 
         <p>Use buttons to get user interaction for playing videos.</p>
         <button onClick={() => setPlay(!play)}>{play ? 'Stop' : 'Play'}</button>
-        <button onClick={() => setFullScreen(!fullScreen)}>{fullScreen ? 'Inline' : 'FullScreen'}</button>
+        <button onClick={() => setFullScreen(!fullScreen)}>
+            {
+                fullScreen
+                    ? 'Inline'
+                    : document.fullscreenEnabled ? 'FullScreen' : 'Pseudo FullScreen'
+            }
+        </button>
 
         <p>Component. If not fullscreen, slideshow is shown below.</p>
         <Signage

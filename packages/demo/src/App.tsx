@@ -1,9 +1,10 @@
 import { Signage, SignageItem } from '@masa-dev/react-signage'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 
 export default function App() {
     const [play, setPlay] = useState(false)
     const [fullScreen, setFullScreen] = useState(false)
+    const testRef = useRef<HTMLVideoElement>(null);
 
     const items: SignageItem[] = [
         {
@@ -20,7 +21,13 @@ export default function App() {
 
         <p>Use buttons to get user interaction for playing videos.</p>
         <button onClick={() => setPlay(!play)}>{play ? 'Stop' : 'Play'}</button>
-        <button onClick={() => setFullScreen(!fullScreen)}>{fullScreen ? 'Inline' : 'FullScreen'}</button>
+        <button onClick={() => setFullScreen(!fullScreen)}>
+            {
+                fullScreen
+                    ? 'Inline'
+                    : document.fullscreenEnabled ? 'FullScreen' : 'Pseudo FullScreen'
+            }
+        </button>
 
         <p>Inline Container</p>
         <Signage

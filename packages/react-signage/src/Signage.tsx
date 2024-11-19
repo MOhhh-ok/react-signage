@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { CSSProperties, useEffect, useRef, useState } from "react";
 import { EffectFade } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { ImageSlide } from "./ImageSlide.js";
@@ -9,6 +9,17 @@ import { VideoSlide } from "./VideoSlide.js";
 const DefaultSize = {
     width: 300,
     height: 200,
+}
+
+const fallbackFullscreenStyle: CSSProperties = {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    maxWidth: "100%",
+    maxHeight: "100%",
+    zIndex: 9999,
 }
 
 export type SignageProps = {
@@ -25,11 +36,18 @@ export function Signage(props: SignageProps) {
     const ref = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        if (!play) return;
-        if (fullScreen) ref.current?.requestFullscreen();
         ref.current?.addEventListener('fullscreenchange', handleFullscreenChange);
         return () => {
             ref.current?.removeEventListener('fullscreenchange', handleFullscreenChange);
+        }
+    }, []);
+
+    useEffect(() => {
+        if (!play) return;
+        if (fullScreen) {
+            if (document.fullscreenEnabled) {
+                ref.current?.requestFullscreen();
+            }
         }
     }, [fullScreen, play]);
 
@@ -41,11 +59,6 @@ export function Signage(props: SignageProps) {
         }
     }
 
-    useEffect(() => {
-        if (!play) return;
-        console.log('play items', items)
-    }, [play]);
-
     let width = 0;
     let height = 0;
     if (!fullScreen) {
@@ -53,13 +66,13 @@ export function Signage(props: SignageProps) {
         height = _height ?? DefaultSize.height;
     }
 
+    const additionalStyle = play && fullScreen && !document.fullscreenEnabled ? fallbackFullscreenStyle : {}
+
     return <>
-        <div ref={ref} style={{ width, height, maxWidth: width, maxHeight: height, background: "black", position: "relative" }}>
+        <div ref={ref} style={{ width, height, maxWidth: width, maxHeight: height, background: "black", position: "relative", ...additionalStyle }}>
             <Swiper
                 style={{ width: "100%", height: "100%" }}
                 modules={[EffectFade]}
-                onSlideChange={(swiper) => console.log('slide change to', swiper.activeIndex)}
-                onSwiper={(swiper) => console.log(swiper)}
                 effect="fade"
                 fadeEffect={{
                     crossFade: true,
