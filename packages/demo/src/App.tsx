@@ -1,9 +1,20 @@
-import { Signage } from '@masa-dev/react-signage'
+import { Signage, SignageItem } from '@masa-dev/react-signage'
 import { useState } from 'react'
 
 export default function App() {
     const [play, setPlay] = useState(false)
     const [fullScreen, setFullScreen] = useState(false)
+
+    const items: SignageItem[] = [
+        {
+            type: 'image',
+            src: '/img1.jpg',
+            second: 3,
+        },
+        {
+            type: 'video',
+            src: '/video1.mp4'
+        }]
 
     return <>
 
@@ -15,19 +26,10 @@ export default function App() {
         <Signage
             play={play}
             fullScreen={fullScreen}
-            items={[
-                {
-                    type: 'image',
-                    src: '/img1.jpg',
-                    second: 3,
-                },
-                {
-                    type: 'video',
-                    src: '/video1.mp4'
-                }
-            ]}
-            width={300}
-            height={200}
+            items={items}
+            onFullscreenStateChange={(fullscreen) => {
+                console.log('onFullscreenStateChange', fullscreen)
+            }}
         />
     </>
 }
