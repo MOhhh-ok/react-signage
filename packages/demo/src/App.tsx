@@ -1,10 +1,9 @@
 import { Signage, SignageItem } from '@masa-dev/react-signage'
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 
 export default function App() {
     const [play, setPlay] = useState(false)
     const [fullScreen, setFullScreen] = useState(false)
-    const testRef = useRef<HTMLVideoElement>(null);
 
     const items: SignageItem[] = [
         {

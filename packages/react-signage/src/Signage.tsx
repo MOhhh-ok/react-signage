@@ -78,6 +78,7 @@ export function Signage(props: SignageProps) {
                     crossFade: true,
                 }}
                 loop={true}
+                allowTouchMove={false}
             >
                 {play && <>
                     {items.map((item, index) => <SwiperSlide key={index}>
