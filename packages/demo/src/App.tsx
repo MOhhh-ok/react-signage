@@ -14,6 +14,10 @@ export default function App() {
         },
         {
             type: 'video',
+            src: "/video1.mp4"
+        },
+        {
+            type: 'video',
             src: "https://images-assets.nasa.gov/video/NHQ_2020_0427_How to Make Demo-2 Straw Rockets/NHQ_2020_0427_How to Make Demo-2 Straw Rockets~orig.mp4?c"
         },
         {

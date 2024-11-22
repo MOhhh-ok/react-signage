@@ -10,7 +10,7 @@ type PreloaderProps = {
 
 export function PreloaderProvider(props: PreloaderProps) {
     const { items, children, onStateChange } = props;
-    const [currentIndex, setCurrentIndex] = useState(0);
+    const [currentIndex, setCurrentIndex] = useState<number>(0);
     const [status, setStatus] = useState<PreloaderStatus>('pending');
     const [message, setMessage] = useState<ReactNode>();
 
@@ -22,13 +22,18 @@ export function PreloaderProvider(props: PreloaderProps) {
         onStateChange?.(status);
     }, [status]);
 
+    useEffect(() => {
+    }, [currentIndex]);
+
     function advance() {
-        const newIndex = currentIndex + 1;
-        setCurrentIndex(newIndex);
-        if (newIndex >= items.length) {
-            setMessage('preload finished');
-            setStatus('finished');
-        }
+        setCurrentIndex(prevIndex => {
+            const newIndex = prevIndex + 1;
+            if (newIndex >= items.length) {
+                setMessage('preload finished');
+                setStatus('finished');
+            }
+            return newIndex;
+        });
     }
 
     return (
@@ -82,16 +87,17 @@ function PreloaderVideo({ src }: { src: string }) {
 
     useEffect(() => {
         setMessage(`loading video ${src}`);
+        const intervalId = setInterval(() => {
+            interval();
+        }, 1000);
+        return () => {
+            clearInterval(intervalId);
+        };
     }, []);
 
-    useEffect(() => {
-        if (!videoRef.current) return;
-        // videoRef.current.playbackRate = 5;
-        // videoRef.current.play();
-    }, [videoRef.current]);
-
-    function handleProgress(event: React.SyntheticEvent<HTMLVideoElement>) {
-        const video = event.target as HTMLVideoElement;
+    function interval() {
+        const video = videoRef.current;
+        if (!video) return;
 
         const buffered = video.buffered;
 
@@ -110,16 +116,10 @@ function PreloaderVideo({ src }: { src: string }) {
         }
     }
 
-    function handleCanPlayThrough() {
-        // advance();
-    }
-
     return (
         <video
             src={src}
             preload="auto"
-            onProgress={handleProgress}
-            onCanPlayThrough={handleCanPlayThrough}
             style={{ width: '100%', height: '100%' }}
             ref={videoRef}
         />
