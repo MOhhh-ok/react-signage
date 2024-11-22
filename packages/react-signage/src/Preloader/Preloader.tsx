@@ -1,6 +1,8 @@
 import { ReactNode, useEffect, useRef, useState } from "react";
 import { SignageItem } from "../types.js";
 import { PreloaderContext, PreloaderStatus, usePreloaderContext } from "./hooks.js";
+import { PreloaderVideo } from "./PreloaderVideo.js";
+import { PreloaderImage } from "./PreloaderImage.js";
 
 type PreloaderProps = {
     items: SignageItem[];
@@ -63,65 +65,4 @@ export function PreloaderMedia() {
     }
 }
 
-function PreloaderImage({ src }: { src: string }) {
-    const { advance, setMessage } = usePreloaderContext();
 
-    useEffect(() => {
-        setMessage(`loading image ${src}`);
-    }, []);
-
-    function handleLoad() {
-        advance();
-    }
-
-    return <img
-        src={src}
-        onLoad={handleLoad}
-        style={{ width: '100%', height: '100%', objectFit: "contain" }}
-    />;
-}
-
-function PreloaderVideo({ src }: { src: string }) {
-    const { advance, setMessage } = usePreloaderContext();
-    const videoRef = useRef<HTMLVideoElement>(null);
-
-    useEffect(() => {
-        setMessage(`loading video ${src}`);
-        const intervalId = setInterval(() => {
-            interval();
-        }, 1000);
-        return () => {
-            clearInterval(intervalId);
-        };
-    }, []);
-
-    function interval() {
-        const video = videoRef.current;
-        if (!video) return;
-
-        const buffered = video.buffered;
-
-        if (buffered.length > 0) {
-            const bufferedEnd = buffered.end(buffered.length - 1);
-            const duration = video.duration;
-            const percentLoaded = (bufferedEnd / duration) * 100;
-            video.currentTime = bufferedEnd;
-
-            setMessage(`Loading: ${Math.round(percentLoaded)}%`);
-
-            // 完全に読み込まれた場合
-            if (bufferedEnd === duration) {
-                advance();
-            }
-        }
-    }
-
-    return (
-        <video
-            src={src}
-            preload="auto"
-            style={{ width: '100%', height: '100%' }}
-            ref={videoRef}
-        />
-    );
-}
