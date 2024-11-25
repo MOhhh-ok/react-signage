@@ -51,6 +51,7 @@ export default function App() {
             onFullscreenStateChange={(fullscreen) => {
                 console.log('onFullscreenStateChange', fullscreen)
             }}
+            onSlideChange={params => { console.log(params) }}
         />
 
         <p>Preloader</p>

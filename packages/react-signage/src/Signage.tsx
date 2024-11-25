@@ -1,9 +1,9 @@
-import { CSSProperties, useEffect, useRef, useState } from "react";
+import { createContext, CSSProperties, useContext, useEffect, useRef } from "react";
 import { EffectFade } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { ImageSlide } from "./ImageSlide.js";
 import './styles/style.css';
-import { SignageItem } from "./types.js";
+import { SignageItem, SignageProps } from "./types.js";
 import { VideoSlide } from "./VideoSlide.js";
 
 const DefaultSize = {
@@ -22,13 +22,14 @@ const fallbackFullscreenStyle: CSSProperties = {
     zIndex: 9999,
 }
 
-export type SignageProps = {
-    play: boolean,
-    items: SignageItem[],
-    fullScreen?: boolean,
-    onFullscreenStateChange?: (fullscreen: boolean) => void,
-    width?: number,
-    height?: number,
+type SignageContextType = {
+    props: SignageProps;
+}
+
+const SignageContext = createContext<SignageContextType>(null!)
+
+export function useSignage() {
+    return useContext(SignageContext);
 }
 
 export function Signage(props: SignageProps) {
@@ -70,31 +71,34 @@ export function Signage(props: SignageProps) {
 
     return <>
         <div ref={ref} style={{ width, height, maxWidth: width, maxHeight: height, background: "black", position: "relative", ...additionalStyle }}>
-            <Swiper
-                style={{ width: "100%", height: "100%" }}
-                modules={[EffectFade]}
-                effect="fade"
-                fadeEffect={{
-                    crossFade: true,
-                }}
-                loop={true}
-                allowTouchMove={false}
-            >
-                {play && <>
-                    {items.map((item, index) => <SwiperSlide key={index}>
-                        <Item {...item} />
-                    </SwiperSlide>)}
-                </>}
-            </Swiper>
+            <SignageContext.Provider value={{ props }}>
+                <Swiper
+                    style={{ width: "100%", height: "100%" }}
+                    modules={[EffectFade]}
+                    effect="fade"
+                    fadeEffect={{
+                        crossFade: true,
+                    }}
+                    loop={true}
+                    allowTouchMove={false}
+                >
+                    {play && <>
+                        {items.map((item, index) => <SwiperSlide key={index}>
+                            <Item item={item} index={index} />
+                        </SwiperSlide>)}
+                    </>}
+                </Swiper>
+            </SignageContext.Provider>
         </div>
     </>
 };
 
-function Item(props: SignageItem) {
-    const { type } = props;
+function Item(props: { item: SignageItem, index: number }) {
+    const { item, index } = props;
+    const { type } = item;
     return <div style={{ width: "100%", height: "100%", display: "flex", justifyContent: "center", alignItems: "center" }}>
-        {type === "image" && <ImageSlide {...props} />}
-        {type === "video" && <VideoSlide {...props} />}
+        {type === "image" && <ImageSlide item={item} index={index} />}
+        {type === "video" && <VideoSlide item={item} index={index} />}
     </div>
 }
 

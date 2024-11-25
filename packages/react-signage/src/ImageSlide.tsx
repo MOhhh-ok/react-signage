@@ -1,14 +1,19 @@
 import { useEffect, useState } from "react";
 import { useSwiper, useSwiperSlide } from "swiper/react";
+import { useSignage } from "./Signage.js";
+import { SignageImage } from "./types.js";
 
-export function ImageSlide(props: { src: string, second: number }) {
-    const { src, second } = props;
+export function ImageSlide(props: { item: SignageImage, index: number }) {
+    const { item, index } = props;
+    const { src, second } = item;
     const swiper = useSwiper();
     const slide = useSwiperSlide();
     const [key, setKey] = useState('');
+    const { props: { onSlideChange } } = useSignage();
 
     useEffect(() => {
         if (!slide.isActive) return;
+        onSlideChange?.({ item, index });
         setKey(Math.random().toString(36).substring(2, 15)); // For reset animation
         setTimeout(() => {
             swiper.slideNext();

@@ -1,16 +1,20 @@
 import { useEffect, useRef } from "react";
 import { useSwiper, useSwiperSlide } from "swiper/react";
+import { SignageVideo } from "./types.js";
+import { useSignage } from "./Signage.js";
 
-export function VideoSlide(props: { src: string }) {
-    const { src } = props;
+export function VideoSlide(props: { item: SignageVideo, index: number }) {
+    const { item, index } = props;
+    const { src } = item;
     const swiper = useSwiper();
     const slide = useSwiperSlide();
+    const { props: { onSlideChange } } = useSignage();
     const videoRef = useRef<HTMLVideoElement>(null);
 
     useEffect(() => {
         const timer = setInterval(interval, 1000);
         return () => clearInterval(timer);
-    }, []);
+    }, [slide.isActive]);
 
     function interval() {
         if (!slide.isActive) return;
@@ -20,7 +24,7 @@ export function VideoSlide(props: { src: string }) {
 
     useEffect(() => {
         if (!slide.isActive) return;
-        console.log('play video', src)
+        onSlideChange?.({ item, index });
         videoRef.current?.play();
     }, [slide.isActive, src]);
 
