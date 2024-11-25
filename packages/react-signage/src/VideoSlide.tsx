@@ -8,6 +8,17 @@ export function VideoSlide(props: { src: string }) {
     const videoRef = useRef<HTMLVideoElement>(null);
 
     useEffect(() => {
+        const timer = setInterval(interval, 1000);
+        return () => clearInterval(timer);
+    }, []);
+
+    function interval() {
+        if (!slide.isActive) return;
+        // Prevent unexpected video stops by forcing play
+        videoRef.current?.play();
+    }
+
+    useEffect(() => {
         if (!slide.isActive) return;
         console.log('play video', src)
         videoRef.current?.play();

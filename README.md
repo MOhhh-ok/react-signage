@@ -4,6 +4,7 @@ This is a react library for signage.
 
 - Auto slide image and video with cross fade.
 - Can toggle fullscreen.
+- Preloader to cache to browser (optional)
 - If the browser does not support the Fullscreen API, use a pseudo fullscreen display.
 
 
@@ -52,6 +53,14 @@ export default function App() {
             fullScreen={fullScreen}
             items={items}
         />
+
+        <p>Preloader (Optional). Preload media files into browser cache. Note: May not work well with large video files.</p>
+        <PreloaderProvider items={items}>
+            <PreloaderMessage />
+            <div style={{ width: "150px", height: "100px", maxWidth: "150px", maxHeight: "100px" }}>
+                <PreloaderMedia />
+            </div>
+        </PreloaderProvider>
     </>
 }
 ```
