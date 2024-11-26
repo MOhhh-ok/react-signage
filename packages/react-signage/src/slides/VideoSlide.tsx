@@ -23,11 +23,13 @@ export function VideoSlide() {
     }
 
     useEffect(() => {
-        if (!isActive) return;
         onSlideChange?.({ item, index });
         if (!videoRef.current) return;
-        videoRef.current.currentTime = 0;
-        videoRef.current.play();
+        if (!isActive) {
+            videoRef.current.pause();
+        } else {
+            videoRef.current.play();
+        }
     }, [isActive, src]);
 
     function onEnded() {

@@ -1,6 +1,6 @@
 {
     "name": "@masa-dev/react-signage",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "description": "This is a react library for signage.",
     "keywords": [
         "react",

@@ -31,6 +31,12 @@ export default function App() {
             second: 3,
         },
         {
+            type: 'image',
+            src: '/img2.jpg',
+            second: 3,
+            animation: { type: 'zoomIn' }
+        },
+        {
             type: 'video',
             src: '/video1.mp4'
         }]
@@ -48,11 +54,13 @@ export default function App() {
         </button>
 
         <p>Component. If not fullscreen, slideshow is shown below.</p>
-        <Signage
+        <SignageProvider
             play={play}
             fullScreen={fullScreen}
             items={items}
-        />
+        >
+            <Signage />
+        </SignageProvider>
 
         <p>Preloader (Optional). Preload media files into browser cache. Note: May not work well with large video files.</p>
         <PreloaderProvider items={items}>
