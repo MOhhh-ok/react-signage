@@ -6,13 +6,16 @@
         "rootDir": "./src",
         "jsx": "react-jsx",
         "types": [
-            "react"
+            "react",
+            "jest"
         ],
         "lib": [
             "dom",
             "dom.iterable",
             "esnext"
-        ]
+        ],
+        "module": "ESNext",
+        "moduleResolution": "bundler"
     },
     "include": [
         "src/**/*.ts",

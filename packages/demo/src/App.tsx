@@ -1,4 +1,4 @@
-import { Signage, SignageItem } from '@masa-dev/react-signage'
+import { DebugContext, Signage, SignageItem } from '@masa-dev/react-signage'
 import { PreloaderProvider, PreloaderMedia, PreloaderMessage } from '@masa-dev/react-signage/preloader';
 import { useState } from 'react'
 
@@ -18,17 +18,18 @@ export default function App() {
         },
         {
             type: 'video',
-            src: "https://images-assets.nasa.gov/video/NHQ_2020_0427_How to Make Demo-2 Straw Rockets/NHQ_2020_0427_How to Make Demo-2 Straw Rockets~orig.mp4?c"
+            src: "/video2.mp4",
+            // src: "https://images-assets.nasa.gov/video/NHQ_2020_0427_How to Make Demo-2 Straw Rockets/NHQ_2020_0427_How to Make Demo-2 Straw Rockets~orig.mp4?c"
         },
         {
             type: 'image',
             src: "https://images-assets.nasa.gov/image/11 14 24 fuel depot/11 14 24 fuel depot~orig.jpg",
             second: 2,
         },
-        {
-            type: 'video',
-            src: "https://images-assets.nasa.gov/video/MSFC_If You Can Build A Rocket/MSFC_If You Can Build A Rocket~orig.mp4?c",
-        }
+        // {
+        //     type: 'video',
+        //     src: "https://images-assets.nasa.gov/video/MSFC_If You Can Build A Rocket/MSFC_If You Can Build A Rocket~orig.mp4?c",
+        // }
     ]
 
     return <>
@@ -44,15 +45,17 @@ export default function App() {
         </button>
 
         <p>Inline Container</p>
-        <Signage
-            play={play}
-            fullScreen={fullScreen}
-            items={items}
-            onFullscreenStateChange={(fullscreen) => {
-                console.log('onFullscreenStateChange', fullscreen)
-            }}
-            onSlideChange={params => { console.log(params) }}
-        />
+        <DebugContext.Provider value={{ debug: true }}>
+            <Signage
+                play={play}
+                fullScreen={fullScreen}
+                items={items}
+                onFullscreenStateChange={(fullscreen) => {
+                    console.log('onFullscreenStateChange', fullscreen)
+                }}
+                onSlideChange={params => { console.log(params) }}
+            />
+        </DebugContext.Provider>
 
         <p>Preloader</p>
         <PreloaderProvider items={items}>

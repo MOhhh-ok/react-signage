@@ -5,6 +5,7 @@ import { ImageSlide } from "./ImageSlide.js";
 import './styles/style.css';
 import { SignageItem, SignageProps } from "./types.js";
 import { VideoSlide } from "./VideoSlide.js";
+import { useDebug } from "./hooks.js";
 
 const DefaultSize = {
     width: 300,
@@ -35,6 +36,7 @@ export function useSignage() {
 export function Signage(props: SignageProps) {
     const { play, items, width: _width, height: _height, fullScreen, onFullscreenStateChange } = props;
     const ref = useRef<HTMLDivElement>(null);
+    const { debug } = useDebug();
 
     useEffect(() => {
         ref.current?.addEventListener('fullscreenchange', handleFullscreenChange);
@@ -82,11 +84,12 @@ export function Signage(props: SignageProps) {
                     loop={true}
                     allowTouchMove={false}
                 >
-                    {play && <>
-                        {items.map((item, index) => <SwiperSlide key={index}>
-                            <Item item={item} index={index} />
-                        </SwiperSlide>)}
-                    </>}
+                    {play
+                        && <>
+                            {items.map((item, index) => <SwiperSlide key={index}>
+                                <Item item={item} index={index} />
+                            </SwiperSlide>)}
+                        </>}
                 </Swiper>
             </SignageContext.Provider>
         </div>
