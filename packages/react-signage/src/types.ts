@@ -1,22 +1,20 @@
+export type SignageAnimation = SignageZoomIn;
+export type SignageZoomIn = {
+    type: 'zoomIn';
+    fromScale?: number;
+    toScale?: number;
+};
+
 export type SignageItem = SignageImage | SignageVideo;
 
 export type SignageImage = {
     type: 'image';
     src: string;
     second: number;
+    animation?: SignageAnimation;
 };
 
 export type SignageVideo = {
     type: 'video';
     src: string;
-};
-
-export type SignageProps = {
-    play: boolean;
-    items: SignageItem[];
-    fullScreen?: boolean;
-    onFullscreenStateChange?: (fullscreen: boolean) => void;
-    onSlideChange?: (params: { item: SignageItem; index: number }) => void;
-    width?: number;
-    height?: number;
 };
