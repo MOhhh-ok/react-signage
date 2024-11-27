@@ -7,7 +7,7 @@ export function VideoSlide() {
     const { item, index, isActive, fadeSpring } = useSignageSlide();
     const { src } = item as SignageVideo;
     const { providerProps, advanceNext, } = useSignage();
-    const { onSlideChange, fadeDuration, play } = providerProps;
+    const { onSlideChange, fadeDuration, play, mute } = providerProps;
     const videoRef = useRef<HTMLVideoElement>(null);
     const { debug } = useDebug();
 
@@ -25,9 +25,11 @@ export function VideoSlide() {
         }
         else {
             onSlideChange?.({ item, index });
-            videoRef.current?.play();
+            if (!videoRef.current) return;
+            videoRef.current.currentTime = 0;
+            videoRef.current.play();
         }
-    }, [isActive, videoRef.current, debug]);
+    }, [isActive]);
 
     function onEnded() {
         advanceNext();
@@ -45,6 +47,8 @@ export function VideoSlide() {
                 ...fadeSpring
             }}
             playsInline
+            autoPlay={play}
+            muted={mute}
         />
     </>
 }

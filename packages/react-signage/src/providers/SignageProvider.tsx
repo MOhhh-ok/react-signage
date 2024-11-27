@@ -11,6 +11,7 @@ export type SignageProviderProps = {
     onSlideChange?: (params: { item: SignageItem; index: number }) => void;
     fadeDuration?: number;
     children: React.ReactNode;
+    mute?: boolean;
 }
 
 export function SignageProvider(providerProps: SignageProviderProps) {

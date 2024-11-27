@@ -54,6 +54,7 @@ export default function App() {
                 console.log('onFullscreenStateChange', fullscreen)
             }}
             onSlideChange={params => { console.log(params) }}
+        // mute={true}
         >
             <Signage />
         </SignageProvider>
