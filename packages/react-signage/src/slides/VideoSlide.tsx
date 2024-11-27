@@ -6,31 +6,28 @@ import { SignageVideo } from "../types.js";
 export function VideoSlide() {
     const { item, index, isActive, fadeSpring } = useSignageSlide();
     const { src } = item as SignageVideo;
-    const { providerProps, advanceNext } = useSignage();
-    const { onSlideChange, fadeDuration } = providerProps;
+    const { providerProps, advanceNext, } = useSignage();
+    const { onSlideChange, fadeDuration, play } = providerProps;
     const videoRef = useRef<HTMLVideoElement>(null);
     const { debug } = useDebug();
 
     useEffect(() => {
-        const timer = setInterval(interval, 1000);
-        interval();
-        return () => clearInterval(timer);
-    }, [isActive, videoRef.current, debug]);
-
-    function interval() {
-        if (!isActive) return;
-        videoRef.current?.play();
-    }
+        if (play) {
+            // Get User Interaction
+            videoRef.current?.play();
+            videoRef.current?.pause();
+        }
+    }, [play]);
 
     useEffect(() => {
-        onSlideChange?.({ item, index });
-        if (!videoRef.current) return;
         if (!isActive) {
-            videoRef.current.pause();
-        } else {
-            videoRef.current.play();
+            videoRef.current?.pause();
         }
-    }, [isActive, src]);
+        else {
+            onSlideChange?.({ item, index });
+            videoRef.current?.play();
+        }
+    }, [isActive, videoRef.current, debug]);
 
     function onEnded() {
         advanceNext();
@@ -47,6 +44,7 @@ export function VideoSlide() {
                 objectFit: "contain",
                 ...fadeSpring
             }}
+            playsInline
         />
     </>
 }

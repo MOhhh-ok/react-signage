@@ -20,6 +20,7 @@ export function ImageSlide() {
 
     useEffect(() => {
         if (!isActive) return;
+        console.log('useractivation', navigator.userActivation)
         onSlideChange?.({ item, index });
         setTimeout(() => {
             advanceNext();

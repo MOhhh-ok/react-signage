@@ -1,40 +1,40 @@
 import { Signage, SignageItem, SignageProvider } from '@masa-dev/react-signage';
 import { PreloaderMedia, PreloaderMessage, PreloaderProvider } from '@masa-dev/react-signage/preloader';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+
+const Item1: SignageItem = {
+    type: 'image',
+    src: "https://images-assets.nasa.gov/image/iss070e044474/iss070e044474~orig.jpg",
+    second: 1,
+}
+
+const Item2: SignageItem = {
+    type: 'video',
+    src: "/video3.mp4"
+}
+
+const Item3: SignageItem = {
+    type: 'video',
+    src: "/video4.mp4",
+}
+
+const BaseItems: SignageItem[] = [
+    Item1,
+    Item2,
+]
 
 export default function App() {
     const [play, setPlay] = useState(false)
     const [fullScreen, setFullScreen] = useState(false)
+    const [items, setItems] = useState(BaseItems)
 
-    const items: SignageItem[] = [
-        {
-            type: 'image',
-            src: "https://images-assets.nasa.gov/image/iss070e044474/iss070e044474~orig.jpg",
-            second: 3,
-        },
-        {
-            type: 'image',
-            src: "https://images-assets.nasa.gov/image/11 14 24 fuel depot/11 14 24 fuel depot~orig.jpg",
-            second: 5,
-            animation: { type: 'zoomIn' }
-        },
-        {
-            type: 'video',
-            src: "/video1.mp4"
-        },
-        // {
-        //     type: 'video',
-        //     src: "/video2.mp4",
-        //     // src: "https://images-assets.nasa.gov/video/NHQ_2020_0427_How to Make Demo-2 Straw Rockets/NHQ_2020_0427_How to Make Demo-2 Straw Rockets~orig.mp4?c"
-        // },
-        // {
-        //     type: 'video',
-        //     src: "https://images-assets.nasa.gov/video/MSFC_If You Can Build A Rocket/MSFC_If You Can Build A Rocket~orig.mp4?c",
-        // }
-    ]
+    useEffect(() => {
+        setTimeout(() => {
+            setItems([...items, Item3])
+        }, 60_000);
+    }, []);
 
     return <>
-
         <p>Use buttons to get user interaction for playing videos.</p>
         <button onClick={() => setPlay(!play)}>{play ? 'Stop' : 'Play'}</button>
         <button onClick={() => setFullScreen(!fullScreen)}>
