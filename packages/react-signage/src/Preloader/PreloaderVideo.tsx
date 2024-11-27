@@ -45,6 +45,7 @@ export function PreloaderVideo({ src }: { src: string }) {
             onLoadedData={handleLoadedData}
             style={{ width: '100%', height: '100%' }}
             ref={videoRef}
+            muted
         />
     );
 }
