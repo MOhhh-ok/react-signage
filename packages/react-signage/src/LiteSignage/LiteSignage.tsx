@@ -12,6 +12,7 @@ type LiteSignageProps = {
     play: boolean;
     fullScreen: boolean;
     style?: CSSProperties;
+    mute?: boolean;
 }
 
 
@@ -20,10 +21,11 @@ type LiteSignageProps = {
  */
 export const LiteSignage = forwardRef<LiteSignageRefType, LiteSignageProps>(
     function LiteSignage(props, ref) {
-        const items = props.items.map(generateIdentifiableSignageItem);
-        const { play, fullScreen } = props;
+        // const items = props.items.map(generateIdentifiableSignageItem);
+        const { play, fullScreen, mute, items } = props;
         const [index, setIndex] = useState(0);
-        const [item, setItem] = useState<SignageItem | undefined>(undefined);
+        const item = items[index];
+        // const [item, setItem] = useState<SignageItem | undefined>(undefined);
         const imgRef = useRef<HTMLImageElement>(null);
         const videoRef = useRef<HTMLVideoElement>(null);
         const timerRef = useRef<number | undefined>(undefined);
@@ -35,19 +37,18 @@ export const LiteSignage = forwardRef<LiteSignageRefType, LiteSignageProps>(
         }));
 
         useEffect(() => {
-            if (index >= items.length) setIndex(0);
+            let newIndex = index;
+            if (newIndex >= items.length) {
+                newIndex = 0;
+            };
+            setIndex(newIndex);
         }, [items]);
-
-        useEffect(() => {
-            const item = items[index];
-            setItem(item);
-        }, [index]);
 
         useEffect(() => {
             if (debug) console.log('item changed', item);
             if (!play) return;
             startItem();
-        }, [item]);
+        }, [index]);
 
         useEffect(() => {
             if (debug) console.log('play state changed', play)
@@ -115,6 +116,7 @@ export const LiteSignage = forwardRef<LiteSignageRefType, LiteSignageProps>(
                     ...fadeInSpring
                 }}
                 onEnded={advanceNext}
+                muted={mute}
             />
         </Container>
     }

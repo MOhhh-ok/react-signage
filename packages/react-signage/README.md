@@ -62,6 +62,9 @@ export default function App() {
             <Signage />
         </SignageProvider>
 
+        <p>If your device is legacy. Try this.</p>
+        <!-- <LiteSignage items={items} play={play} fullScreen={fullScreen} /> -->
+
         <p>Preloader (Optional). Preload media files into browser cache. Note: May not work well with large video files.</p>
         <PreloaderProvider items={items}>
             <PreloaderMessage />
@@ -69,6 +72,7 @@ export default function App() {
                 <PreloaderMedia />
             </div>
         </PreloaderProvider>
+
     </>
 }
 ```

@@ -20,8 +20,8 @@ const Item3: SignageItem = {
 }
 
 const BaseItems: SignageItem[] = [
-    Item2,
     Item1,
+    Item2,
     Item3,
 ]
 
@@ -37,7 +37,7 @@ export default function App() {
     }, []);
 
     return <>
-        {/* <Test2 items={items} /> */}
+        <Test2 items={items} />
 
         <p>Use buttons to get user interaction for playing videos.</p>
         <button onClick={() => setPlay(!play)}>{play ? 'Stop' : 'Play'}</button>
@@ -50,16 +50,12 @@ export default function App() {
         </button>
 
         <p>Inline Container</p>
-        <DebugProvider debug={true}>
+        <DebugProvider debug={false}>
             <SignageProvider
                 play={play}
                 fullScreen={fullScreen}
                 items={items}
-                onFullscreenStateChange={(fullscreen) => {
-                    console.log('onFullscreenStateChange', fullscreen)
-                }}
                 onSlideChange={params => { console.log(params) }}
-            // mute={true}
             >
                 <Signage />
             </SignageProvider>
