@@ -1,10 +1,10 @@
 import { animated } from '@react-spring/web';
 import { useEffect, useRef } from "react";
-import { useDebug, useSignage, useSignageSlide } from "../hooks.js";
+import { useDebug, useSignage, useSlide } from "../hooks.js";
 import { SignageVideo } from "../types.js";
 
 export function VideoSlide() {
-    const { item, index, isActive, fadeSpring } = useSignageSlide();
+    const { item, index, isActive, fadeSpring } = useSlide();
     const { src } = item as SignageVideo;
     const { providerProps, advanceNext, } = useSignage();
     const { onSlideChange, fadeDuration, play, mute } = providerProps;

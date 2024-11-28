@@ -1,8 +1,12 @@
 import { CSSProperties, useEffect, useRef } from "react";
 import { DefaultSize, FallbackFullscreenStyle } from "./consts.js";
 import { useSignage } from "./hooks.js";
+import { SingleSlideProvider } from "./providers/SingleSlideProvider.js";
 import { SlideProvider } from "./providers/SlideProvider.js";
 import { Slide } from "./slides/Slide.js";
+import { SignageSlideType } from "./types.js";
+
+const DefaultSlideType: SignageSlideType = 'multiple';
 
 export type SignageProps = {
     width?: number;
@@ -47,13 +51,11 @@ export function Signage(props: SignageProps) {
 
     return <>
         <div ref={ref} style={{ ...baseStyle, width, height, maxWidth: width, maxHeight: height, ...additionalStyle }}>
-            {items.map((item, index) => {
-                return <SlideProvider key={index} item={item} index={index}>
-                    <Slide />
-                </SlideProvider>
+            {items.map((item, index) => <SlideProvider key={index} item={item} index={index}>
+                <Slide />
+            </SlideProvider>)
             }
-            )}
-        </div>
+        </div >
     </>
 };
 

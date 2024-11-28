@@ -6,6 +6,7 @@ export type SignageZoomIn = {
 };
 
 export type SignageItem = SignageImage | SignageVideo;
+export type IdentifiableSignageItem = SignageItem & { id: string };
 
 export type SignageImage = {
     type: 'image';
@@ -18,3 +19,5 @@ export type SignageVideo = {
     type: 'video';
     src: string;
 };
+
+export type SignageSlideType = 'single' | 'multiple';

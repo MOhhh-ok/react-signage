@@ -1,17 +1,17 @@
 import { animated, easings, useSpring } from "@react-spring/web";
 import { CSSProperties, useEffect } from "react";
-import { useSignage, useSignageSlide } from "../hooks.js";
+import { useSignage, useSlide } from "../hooks.js";
 import { SignageImage } from "../types.js";
 
 const BaseStyle: CSSProperties = { width: "100%", height: "100%", objectFit: "contain", objectPosition: "center" }
 
 export function ImageSlide() {
-    const { item, index } = useSignageSlide();
+    const { item, index } = useSlide();
     const { src, second, animation } = item as SignageImage;
     const { fromScale, toScale } = animation || {};
     const { providerProps, advanceNext } = useSignage();
     const { onSlideChange } = providerProps;
-    const { isActive, fadeSpring } = useSignageSlide();
+    const { isActive, fadeSpring } = useSlide();
     const [zoomInSpring, zoomInApi] = useSpring(() => ({
         from: { scale: fromScale ?? 1 },
         to: { scale: toScale ?? 1.2 },

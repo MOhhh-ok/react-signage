@@ -1,2 +1,4 @@
-export * from './SignageProvider.js';
-export * from './SlideProvider.js';
+export * from './SignageProvider';
+export * from './SlideProvider';
+export * from './DebugProvider';
+export * from './SingleSlideProvider';

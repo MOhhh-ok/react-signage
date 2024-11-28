@@ -3,24 +3,28 @@ import { SignageItem } from './types';
 import { SignageProviderProps } from './providers/SignageProvider';
 import { SpringValues } from '@react-spring/web';
 
-type DebugContextType = { debug: boolean };
+export type DebugContextType = { debug: boolean };
 
 type SignageContextType = {
     providerProps: Omit<SignageProviderProps, 'children'>;
     currentIndex: number;
-    currentItem: SignageItem | null;
+    currentItem: SignageItem;
     advanceNext: () => void;
 };
 
-type SignageSlideContextType = {
+type SlideContextType = {
     isActive: boolean;
     item: SignageItem;
     index: number;
     fadeSpring: {};
 };
 
+type SingleSlideContextType = {
+    item: SignageItem;
+    index: number;
+};
+
 export const DebugContext = createContext<DebugContextType>({ debug: false });
 export const SignageContext = createContext<SignageContextType>(null!);
-export const SignageSlideContext = createContext<SignageSlideContextType>(
-    null!
-);
+export const SlideContext = createContext<SlideContextType>(null!);
+export const SingleSlideContext = createContext<SingleSlideContextType>(null!);

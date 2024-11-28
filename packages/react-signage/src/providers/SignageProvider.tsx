@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { DefaultFadeDuration } from "../consts";
 import { SignageContext } from "../contexts";
 import { SignageItem } from "../types";
+import { useDebug } from "../hooks";
 
 export type SignageProviderProps = {
     items: SignageItem[];
@@ -14,22 +15,30 @@ export type SignageProviderProps = {
     mute?: boolean;
 }
 
-export function SignageProvider(providerProps: SignageProviderProps) {
-    providerProps = initProps(providerProps);
+export function SignageProvider(props: SignageProviderProps) {
+    const providerProps = useMemo(() => initProps(props), [props]);
 
     const { items, children } = providerProps;
     const [currentIndex, setCurrentIndex] = useState<number>(0);
     const currentItem = items[currentIndex];
+    const { debug } = useDebug();
 
     useEffect(() => {
+        if (debug) console.log('items length changed', { length: items.length });
         if (items.length === 0) return;
         setCurrentIndex(0);
     }, [items.length]);
 
+    useEffect(() => {
+        if (debug) console.log('currentItem changed', currentItem);
+    }, [currentIndex]);
+
     function advanceNext() {
         setCurrentIndex(prev => {
             const newIndex = prev + 1;
-            return items.length <= newIndex ? 0 : newIndex;
+            const result = items.length <= newIndex ? 0 : newIndex;
+            if (debug) console.log('advanceNext', `${result} / ${items.length - 1}`);
+            return result;
         });
     }
 
@@ -38,6 +47,10 @@ export function SignageProvider(providerProps: SignageProviderProps) {
     </SignageContext.Provider>
 }
 
-function initProps(providerProps: SignageProviderProps): SignageProviderProps {
-    return { ...providerProps, fadeDuration: providerProps.fadeDuration ?? DefaultFadeDuration }
+function initProps(props: SignageProviderProps): SignageProviderProps {
+    // console.log('initProps');
+    return {
+        ...props,
+        fadeDuration: props.fadeDuration ?? DefaultFadeDuration
+    }
 }

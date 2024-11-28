@@ -1,6 +1,6 @@
 import { useSpring, easings } from "@react-spring/web";
 import { useEffect } from "react";
-import { SignageSlideContext } from "../contexts";
+import { SlideContext } from "../contexts";
 import { useSignage } from "../hooks";
 import { SignageItem } from "../types";
 
@@ -33,7 +33,7 @@ export function SlideProvider(props: SlideProviderProps) {
     }, [isActive, fadeApi]);
 
 
-    return <SignageSlideContext.Provider key={index} value={{ isActive, item, index, fadeSpring }}>
+    return <SlideContext.Provider key={index} value={{ isActive, item, index, fadeSpring }}>
         {children}
-    </SignageSlideContext.Provider>
+    </SlideContext.Provider>
 }
