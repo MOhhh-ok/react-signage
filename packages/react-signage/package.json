@@ -1,6 +1,6 @@
 {
     "name": "@masa-dev/react-signage",
-    "version": "2.2.0",
+    "version": "2.2.1",
     "description": "This is a react library for signage.",
     "keywords": [
         "react",
@@ -17,7 +17,7 @@
             "types": "./dist/Preloader/index.d.ts",
             "import": "./dist/Preloader/index.js"
         },
-        "./experimental": {
+        "./lite": {
             "types": "./dist/LiteSignage/index.d.ts",
             "import": "./dist/LiteSignage/index.js"
         }
