@@ -15,7 +15,7 @@ const Item2: SignageItem = {
 
 const Item3: SignageItem = {
     type: 'video',
-    src: "/video4.mp4",
+    src: "/video4a.mp4",
 }
 
 const BaseItems: SignageItem[] = [

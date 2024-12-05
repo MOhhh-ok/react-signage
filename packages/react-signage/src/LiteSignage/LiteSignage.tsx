@@ -1,11 +1,14 @@
 import { animated, useSpring } from '@react-spring/web';
-import { CSSProperties, forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
+import { CSSProperties, forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState, VideoHTMLAttributes } from "react";
 import { useDebug } from "../hooks";
 import { SignageItem } from "../types";
 import { Container } from "./Container";
 import { ItemBaseStyle, ItemHideStyle } from "./styles";
 import { LiteSignageRefType } from "./types";
 import { Toaster } from 'react-hot-toast';
+
+const MAX_RETRY_SPAN = 10_000;
+const MIN_RETRY_SPAN = 1000;
 
 type LiteSignageProps = {
     items: SignageItem[];
@@ -114,6 +117,7 @@ export const LiteSignage = forwardRef<LiteSignageRefType, LiteSignageProps>(
             }
         }
 
+
         return <Container play={play} fullScreen={fullScreen} style={{ ...props.style, position: "relative" }}>
             <animated.img
                 ref={imgRef}
@@ -123,7 +127,7 @@ export const LiteSignage = forwardRef<LiteSignageRefType, LiteSignageProps>(
                     ...fadeInSpring
                 }}
             />
-            <animated.video
+            <Video
                 ref={videoRef}
                 style={{
                     ...ItemBaseStyle,
@@ -131,11 +135,58 @@ export const LiteSignage = forwardRef<LiteSignageRefType, LiteSignageProps>(
                     ...fadeInSpring
                 }}
                 onEnded={advanceNext}
-                onError={() => !!videoRef.current?.src && debugMessage({ message: 'video error' + videoRef.current?.src, severity: 'error' })}
-                onWaiting={() => debugMessage({ message: 'video waiting', severity: 'warning' })}
+                // onRetryOver={advanceNext}
                 muted={mute}
             />
             {debug && <Toaster position="bottom-right" />}
         </Container>
     }
 );
+
+type VideoProps = VideoHTMLAttributes<HTMLVideoElement> & {
+    // onRetryOver?: () => void;
+}
+
+const Video = forwardRef<HTMLVideoElement, VideoProps>(
+    function Video(props, ref) {
+        const { debugMessage } = useDebug();
+        const retrySpanRef = useRef<number>(1000);
+        const retryTimerRef = useRef<number | undefined>(undefined);
+
+        useEffect(() => {
+            clearTimeout(retryTimerRef.current);
+        }, [props.src]);
+
+        function onVideoError() {
+            if (typeof ref === 'function' || !ref?.current?.src) return;
+            debugMessage({ message: 'video error. retrying...', severity: 'error' })
+            clearTimeout(retryTimerRef.current);
+            retryTimerRef.current = setTimeout(() => {
+                // debugMessage({ message: `retry. span: ${retrySpanRef.current}ms`, severity: 'info' });
+                ref.current?.load();
+                ref.current?.play();
+                upSpan();
+            }, retrySpanRef.current);
+        }
+
+        function upSpan() {
+            retrySpanRef.current = Math.min(retrySpanRef.current * 1.2, MAX_RETRY_SPAN);
+        }
+
+        function resetSpan() {
+            retrySpanRef.current = MIN_RETRY_SPAN;
+        }
+
+        function onEnded(ev: any) {
+            resetSpan();
+            return props.onEnded?.(ev);
+        }
+
+        return <animated.video
+            ref={ref}
+            {...props}
+            onError={onVideoError}
+            onEnded={onEnded}
+            onWaiting={() => debugMessage({ message: 'video waiting', severity: 'warning' })}
+        />
+    });
