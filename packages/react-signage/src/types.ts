@@ -11,7 +11,7 @@ export type IdentifiableSignageItem = SignageItem & { id: string };
 export type SignageImage = {
     type: 'image';
     src: string;
-    second: number;
+    second: number; // If zero, it will be infinite loop.
     animation?: SignageAnimation;
 };
 

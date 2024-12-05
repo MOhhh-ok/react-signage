@@ -1,5 +1,5 @@
 import { animated, useSpring } from '@react-spring/web';
-import { CSSProperties, forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
+import { CSSProperties, forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { useDebug } from "../hooks";
 import { SignageItem } from "../types";
 import { Container } from "./Container";
@@ -39,12 +39,15 @@ export const LiteSignage = forwardRef<LiteSignageRefType, LiteSignageProps>(
             advanceNext,
         }));
 
+        const itemsJson = useMemo(() => JSON.stringify(items), [items]);
+
         useEffect(() => {
+            debugMessage({ message: `items changed`, severity: 'info' });
             setIndexData(prev => {
                 const index = prev.index < items.length ? prev.index : 0;
                 return { index, changedAt: Date.now() };
             });
-        }, [JSON.stringify(items)]);
+        }, [itemsJson]);
 
         useEffect(() => {
             if (!play) return;
@@ -52,6 +55,7 @@ export const LiteSignage = forwardRef<LiteSignageRefType, LiteSignageProps>(
         }, [indexData]);
 
         useEffect(() => {
+            debugMessage({ message: `play state changed to: ${play}`, severity: 'info' });
             if (play) {
                 startItem();
             } else {
@@ -100,12 +104,14 @@ export const LiteSignage = forwardRef<LiteSignageRefType, LiteSignageProps>(
         }
 
         function resetEvents() {
-            if (item?.type != 'image') return 0;
-            const second = item.second ?? 0;
+            if (item?.type != 'image') return;
             clearTimeout(timerRef.current);
-            timerRef.current = setTimeout(() => {
-                advanceNext();
-            }, second * 1000);
+            const second = item.second ?? 0;
+            if (second > 0) {
+                timerRef.current = setTimeout(() => {
+                    advanceNext();
+                }, second * 1000);
+            }
         }
 
         return <Container play={play} fullScreen={fullScreen} style={{ ...props.style, position: "relative" }}>
