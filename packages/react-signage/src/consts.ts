@@ -13,5 +13,5 @@ export const FallbackFullscreenStyle: CSSProperties = {
     height: '100%',
     maxWidth: '100%',
     maxHeight: '100%',
-    zIndex: 9999,
+    zIndex: 1000,
 };

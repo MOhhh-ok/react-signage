@@ -2,10 +2,10 @@ import { animated, useSpring } from '@react-spring/web';
 import { CSSProperties, forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { useDebug } from "../hooks";
 import { SignageItem } from "../types";
-import { generateIdentifiableSignageItem } from "../utils";
 import { Container } from "./Container";
 import { ItemBaseStyle, ItemHideStyle } from "./styles";
 import { LiteSignageRefType } from "./types";
+import { Toaster } from 'react-hot-toast';
 
 type LiteSignageProps = {
     items: SignageItem[];
@@ -15,43 +15,43 @@ type LiteSignageProps = {
     mute?: boolean;
 }
 
+type IndexData = {
+    index: number;
+    changedAt: number;
+}
+
 
 /**
  * This is for legacy devices. limited some features.
  */
 export const LiteSignage = forwardRef<LiteSignageRefType, LiteSignageProps>(
     function LiteSignage(props, ref) {
-        // const items = props.items.map(generateIdentifiableSignageItem);
         const { play, fullScreen, mute, items } = props;
-        const [index, setIndex] = useState(0);
-        const item = items[index];
-        // const [item, setItem] = useState<SignageItem | undefined>(undefined);
+        const [indexData, setIndexData] = useState<IndexData>({ index: 0, changedAt: 0 });
+        const item = items[indexData.index];
         const imgRef = useRef<HTMLImageElement>(null);
         const videoRef = useRef<HTMLVideoElement>(null);
         const timerRef = useRef<number | undefined>(undefined);
-        const { debug } = useDebug();
+        const { debug, debugMessage } = useDebug();
         const [fadeInSpring, fadeInSpringApi] = useSpring(() => ({}));
 
         useImperativeHandle(ref, () => ({
-            advanceNext: advanceNext,
+            advanceNext,
         }));
 
         useEffect(() => {
-            let newIndex = index;
-            if (newIndex >= items.length) {
-                newIndex = 0;
-            };
-            setIndex(newIndex);
+            setIndexData(prev => {
+                const index = prev.index < items.length ? prev.index : 0;
+                return { index, changedAt: Date.now() };
+            });
         }, [items]);
 
         useEffect(() => {
-            if (debug) console.log('item changed', item);
             if (!play) return;
             startItem();
-        }, [index]);
+        }, [indexData]);
 
         useEffect(() => {
-            if (debug) console.log('play state changed', play)
             if (play) {
                 startItem();
             } else {
@@ -74,11 +74,11 @@ export const LiteSignage = forwardRef<LiteSignageRefType, LiteSignageProps>(
 
 
         function advanceNext() {
-            setIndex(prev => {
-                const newIndex = prev + 1;
+            setIndexData(prev => {
+                const newIndex = prev.index + 1;
                 const result = newIndex >= items.length ? 0 : newIndex
-                if (debug) console.log('advanceNext', result);
-                return result;
+                debugMessage({ message: `advanceNext: ${result}`, severity: 'info' });
+                return { index: result, changedAt: Date.now() };
             });
         }
 
@@ -86,7 +86,11 @@ export const LiteSignage = forwardRef<LiteSignageRefType, LiteSignageProps>(
             imgRef.current?.setAttribute('src', item?.type == 'image' ? item.src : '');
             videoRef.current?.setAttribute('src', item?.type == 'video' ? item.src : '');
             if (item?.type == 'video') {
-                videoRef.current?.play();
+                if (videoRef.current) {
+                    debugMessage({ message: 'start video', severity: 'info' });
+                    videoRef.current.currentTime = 0;
+                    videoRef.current.play();
+                }
             }
         }
 
@@ -99,7 +103,7 @@ export const LiteSignage = forwardRef<LiteSignageRefType, LiteSignageProps>(
             }, second * 1000);
         }
 
-        return <Container play={play} fullScreen={fullScreen} style={props.style}>
+        return <Container play={play} fullScreen={fullScreen} style={{ ...props.style, position: "relative" }}>
             <animated.img
                 ref={imgRef}
                 style={{
@@ -116,8 +120,11 @@ export const LiteSignage = forwardRef<LiteSignageRefType, LiteSignageProps>(
                     ...fadeInSpring
                 }}
                 onEnded={advanceNext}
+                onError={() => debugMessage({ message: 'video error', severity: 'error' })}
+                onWaiting={() => debugMessage({ message: 'video waiting', severity: 'warning' })}
                 muted={mute}
             />
+            {debug && <Toaster position="bottom-right" />}
         </Container>
     }
 );

@@ -1,9 +1,11 @@
-import { createContext, useContext } from 'react';
-import { SignageItem } from './types';
+import { createContext, Dispatch, SetStateAction } from 'react';
 import { SignageProviderProps } from './providers/SignageProvider';
-import { SpringValues } from '@react-spring/web';
+import { DebugData, SignageItem } from './types';
 
-export type DebugContextType = { debug: boolean };
+export type DebugContextType = {
+    debug: boolean;
+    debugMessage: (data: DebugData) => void;
+};
 
 type SignageContextType = {
     providerProps: Omit<SignageProviderProps, 'children'>;
@@ -24,7 +26,10 @@ type SingleSlideContextType = {
     index: number;
 };
 
-export const DebugContext = createContext<DebugContextType>({ debug: false });
+export const DebugContext = createContext<DebugContextType>({
+    debug: false,
+    debugMessage: () => {},
+});
 export const SignageContext = createContext<SignageContextType>(null!);
 export const SlideContext = createContext<SlideContextType>(null!);
 export const SingleSlideContext = createContext<SingleSlideContextType>(null!);

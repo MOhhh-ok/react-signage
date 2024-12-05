@@ -1,6 +1,6 @@
 {
     "name": "@masa-dev/react-signage",
-    "version": "2.2.5",
+    "version": "2.3.0",
     "description": "This is a react library for signage.",
     "keywords": [
         "react",
@@ -40,7 +40,8 @@
     "author": "masa-dev",
     "license": "MIT",
     "dependencies": {
-        "@react-spring/web": "^9.7.5"
+        "@react-spring/web": "^9.7.5",
+        "react-hot-toast": "^2.4.1"
     },
     "peerDependencies": {
         "react": "^18.3.1",
