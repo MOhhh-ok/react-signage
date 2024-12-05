@@ -44,7 +44,7 @@ export const LiteSignage = forwardRef<LiteSignageRefType, LiteSignageProps>(
                 const index = prev.index < items.length ? prev.index : 0;
                 return { index, changedAt: Date.now() };
             });
-        }, [items]);
+        }, [JSON.stringify(items)]);
 
         useEffect(() => {
             if (!play) return;
@@ -83,14 +83,19 @@ export const LiteSignage = forwardRef<LiteSignageRefType, LiteSignageProps>(
         }
 
         function setElements() {
-            imgRef.current?.setAttribute('src', item?.type == 'image' ? item.src : '');
-            videoRef.current?.setAttribute('src', item?.type == 'video' ? item.src : '');
-            if (item?.type == 'video') {
-                if (videoRef.current) {
-                    debugMessage({ message: 'start video', severity: 'info' });
-                    videoRef.current.currentTime = 0;
-                    videoRef.current.play();
-                }
+            switch (item.type) {
+                case 'image':
+                    imgRef.current?.setAttribute('src', item.src);
+                    videoRef.current?.pause();
+                    break;
+                case 'video':
+                    if (videoRef.current) {
+                        videoRef.current.setAttribute('src', item.src);
+                        debugMessage({ message: 'start video', severity: 'info' });
+                        videoRef.current.currentTime = 0;
+                        videoRef.current.play();
+                    }
+                    break;
             }
         }
 
@@ -120,7 +125,7 @@ export const LiteSignage = forwardRef<LiteSignageRefType, LiteSignageProps>(
                     ...fadeInSpring
                 }}
                 onEnded={advanceNext}
-                onError={() => debugMessage({ message: 'video error', severity: 'error' })}
+                onError={() => !!videoRef.current?.src && debugMessage({ message: 'video error' + videoRef.current?.src, severity: 'error' })}
                 onWaiting={() => debugMessage({ message: 'video waiting', severity: 'warning' })}
                 muted={mute}
             />

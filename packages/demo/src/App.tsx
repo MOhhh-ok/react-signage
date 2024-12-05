@@ -20,8 +20,8 @@ const Item3: SignageItem = {
 }
 
 const BaseItems: SignageItem[] = [
-    // Item1,
-    // Item2,
+    Item1,
+    Item2,
     Item3,
 ]
 
