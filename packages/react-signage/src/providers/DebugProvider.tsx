@@ -15,9 +15,11 @@ const colors: Record<DebugMessageSeverity, string> = {
     warning: 'black',
     error: 'white'
 }
-type Props = DebugContextType & {
+type Props = {
+    debug: boolean;
     children: React.ReactNode
 }
+
 export function DebugProvider(props: Props) {
     const { debug, children } = props;
 
