@@ -6,6 +6,7 @@ import { Container } from "./Container";
 import { ItemBaseStyle, ItemHideStyle } from "./styles";
 import { LiteSignageRefType } from "./types";
 import { Toaster } from 'react-hot-toast';
+import { interactionDummyVideo } from '../interactionDummyVideo';
 
 const MAX_RETRY_SPAN = 10_000;
 const MIN_RETRY_SPAN = 1000;
@@ -69,9 +70,14 @@ export const LiteSignage = forwardRef<LiteSignageRefType, LiteSignageProps>(
 
 
         function startItem() {
-            setElements();
-            resetEvents();
-            fadeInSpringApi.start({ from: { opacity: 0 }, to: { opacity: 1 }, config: { duration: 1000 } });
+            if (!videoRef.current) return;
+            // 古い端末用に、一旦ダミー動画を再生させる
+            videoRef.current.src = interactionDummyVideo;
+            videoRef.current.play().then(() => {
+                setElements();
+                resetEvents();
+                fadeInSpringApi.start({ from: { opacity: 0 }, to: { opacity: 1 }, config: { duration: 1000 } });
+            });
         }
 
         function stopItem() {

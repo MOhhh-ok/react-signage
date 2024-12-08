@@ -15,7 +15,7 @@ const Item2: SignageItem = {
 
 const Item3: SignageItem = {
     type: 'video',
-    src: "/video4a.mp4",
+    src: "/video4.mp4",
 }
 
 const BaseItems: SignageItem[] = [
@@ -44,6 +44,7 @@ export function ItemChangeTest() {
                 play={play}
                 fullScreen={fullScreen}
                 items={items}
+            // mute={true}
             />
         </DebugProvider>
     </>
