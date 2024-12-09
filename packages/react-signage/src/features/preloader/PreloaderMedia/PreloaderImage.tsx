@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { usePreloaderContext } from "./hooks.js";
+import { usePreloaderContext } from "../hooks.js";
 
 export function PreloaderImage({ src }: { src: string }) {
     const { advance, setMessage } = usePreloaderContext();

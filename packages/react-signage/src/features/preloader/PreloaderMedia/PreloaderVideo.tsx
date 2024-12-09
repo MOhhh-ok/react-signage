@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { usePreloaderContext } from "./hooks.js";
+import { usePreloaderContext } from "../hooks.js";
 
 const INTERVAL_MS = 700;
 

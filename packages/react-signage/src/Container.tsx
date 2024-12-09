@@ -1,11 +1,21 @@
 import { CSSProperties, useEffect, useRef, useState } from "react";
-import { FallbackFullscreenStyle } from "../consts";
 
 const ContainerBaseStyle: CSSProperties = {
     background: "black",
     width: '300px',
     height: '200px',
 }
+
+const FallbackFullscreenStyle: CSSProperties = {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    maxWidth: '100%',
+    maxHeight: '100%',
+    zIndex: 1000,
+};
 
 export function Container(props: { play: boolean, fullScreen: boolean, style?: CSSProperties, children: React.ReactNode }) {
     const { fullScreen, style, play, children } = props;

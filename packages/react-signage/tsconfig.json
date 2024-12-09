@@ -15,7 +15,12 @@
             "esnext"
         ],
         "module": "ESNext",
-        "moduleResolution": "bundler"
+        "moduleResolution": "bundler",
+        "paths": {
+            "@/*": [
+                "./src/*"
+            ]
+        }
     },
     "include": [
         "src/**/*.ts",

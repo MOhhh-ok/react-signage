@@ -1,5 +1,4 @@
-import { DebugProvider, SignageItem } from '@masa-dev/react-signage';
-import { LiteSignage } from '@masa-dev/react-signage/lite';
+import { DebugProvider, Signage, SignageItem } from '@masa-dev/react-signage';
 import { useEffect, useState } from 'react';
 
 const Item1: SignageItem = {
@@ -40,7 +39,7 @@ export function ItemChangeTest() {
         <button onClick={() => setPlay(true)}>Play</button>
         {JSON.stringify(items)}
         <DebugProvider debug={true}>
-            <LiteSignage
+            <Signage
                 play={play}
                 fullScreen={fullScreen}
                 items={items}

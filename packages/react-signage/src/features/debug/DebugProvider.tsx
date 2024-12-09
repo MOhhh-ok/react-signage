@@ -1,6 +1,6 @@
-import { Toaster, toast } from "react-hot-toast";
-import { DebugContext, DebugContextType } from "../contexts";
-import { DebugData, DebugMessageSeverity } from "../types";
+import { toast } from "react-hot-toast";
+import { DebugContext } from "./DebugContext";
+import { DebugData, DebugMessageSeverity } from "./types";
 
 
 
