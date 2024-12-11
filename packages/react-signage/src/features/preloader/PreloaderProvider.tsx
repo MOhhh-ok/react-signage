@@ -15,10 +15,6 @@ export function PreloaderProvider(props: PreloaderProviderProps) {
     const [status, setStatus] = useState<PreloaderStatus>({ type: 'pending' });
 
     useEffect(() => {
-        setStatus({ type: 'pending' });
-    }, []);
-
-    useEffect(() => {
         onStateChange?.(status);
     }, [status]);
 
@@ -30,6 +26,9 @@ export function PreloaderProvider(props: PreloaderProviderProps) {
             const newIndex = prevIndex + 1;
             if (newIndex >= items.length) {
                 setStatus({ type: 'finished' });
+                console.log('preload finished');
+            } else {
+                console.log('preload advance to ', newIndex);
             }
             return newIndex;
         });

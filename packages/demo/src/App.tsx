@@ -4,7 +4,7 @@ import { PreloaderTest } from './PreloaderTest';
 export default function App() {
     return <>
         <ItemChangeTest />
-        {/* <PreloaderTest /> */}
+        <PreloaderTest />
     </>
 }
 
