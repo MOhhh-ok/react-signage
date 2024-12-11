@@ -1,5 +1,5 @@
 import { SignageItem } from "@/types";
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useEffect, useMemo, useState } from "react";
 import { PreloaderContext } from "./contexts";
 import { PreloaderStatus } from "./types";
 
@@ -17,6 +17,17 @@ export function PreloaderProvider(props: PreloaderProviderProps) {
     useEffect(() => {
         onStateChange?.(status);
     }, [status]);
+
+    const itemsJson = useMemo(() => JSON.stringify(items), [items]);
+    useEffect(() => {
+        if (items.length == 0) {
+            setStatus({ type: 'finished' });
+            console.log('preload no items');
+        } else {
+            setStatus({ type: 'pending' });
+            setCurrentIndex(0);
+        }
+    }, [itemsJson]);
 
     useEffect(() => {
     }, [currentIndex]);
