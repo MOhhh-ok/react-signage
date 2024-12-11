@@ -25,7 +25,7 @@ export function PreloaderVideo({ src }: { src: string }) {
             const percentLoaded = (bufferedEnd / duration) * 100;
             video.currentTime = bufferedEnd;
 
-            setStatus({ type: 'loadingVideo', src, percent: percentLoaded });
+            setStatus({ type: 'loadingVideo', src, percent: Math.round(percentLoaded) });
 
             // 完全に読み込まれた場合
             if (bufferedEnd === duration) {
