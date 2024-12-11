@@ -1,11 +1,11 @@
 import { useEffect } from "react";
-import { usePreloaderContext } from "../hooks.js";
+import { usePreloader } from "../hooks.js";
 
 export function PreloaderImage({ src }: { src: string }) {
-    const { advance, setMessage } = usePreloaderContext();
+    const { advance, setStatus } = usePreloader();
 
     useEffect(() => {
-        setMessage(`loading image ${src}`);
+        setStatus({ type: 'loadingImage', src });
     }, []);
 
     function handleLoad() {

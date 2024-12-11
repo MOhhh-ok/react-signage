@@ -8,10 +8,7 @@ type ContextType = {
     advance: () => void;
 
     status: PreloaderStatus;
-    message: ReactNode;
-
     setStatus: (status: PreloaderStatus) => void;
-    setMessage: (message: string) => void;
 };
 
 export const PreloaderContext = createContext<ContextType>(null!);

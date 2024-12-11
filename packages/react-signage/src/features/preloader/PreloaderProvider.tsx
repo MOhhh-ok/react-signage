@@ -12,11 +12,10 @@ export type PreloaderProviderProps = {
 export function PreloaderProvider(props: PreloaderProviderProps) {
     const { items, children, onStateChange } = props;
     const [currentIndex, setCurrentIndex] = useState<number>(0);
-    const [status, setStatus] = useState<PreloaderStatus>('pending');
-    const [message, setMessage] = useState<ReactNode>();
+    const [status, setStatus] = useState<PreloaderStatus>({ type: 'pending' });
 
     useEffect(() => {
-        setStatus('processing');
+        setStatus({ type: 'pending' });
     }, []);
 
     useEffect(() => {
@@ -30,15 +29,14 @@ export function PreloaderProvider(props: PreloaderProviderProps) {
         setCurrentIndex(prevIndex => {
             const newIndex = prevIndex + 1;
             if (newIndex >= items.length) {
-                setMessage('preload finished');
-                setStatus('finished');
+                setStatus({ type: 'finished' });
             }
             return newIndex;
         });
     }
 
     return (
-        <PreloaderContext.Provider value={{ items, currentIndex, advance, status, setStatus, message, setMessage }}>
+        <PreloaderContext.Provider value={{ items, currentIndex, advance, status, setStatus, }}>
             {children}
         </PreloaderContext.Provider>
     );

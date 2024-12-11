@@ -1,14 +1,14 @@
 import { useEffect, useRef } from "react";
-import { usePreloaderContext } from "../hooks.js";
+import { usePreloader } from "../hooks.js";
 
 const INTERVAL_MS = 700;
 
 export function PreloaderVideo({ src }: { src: string }) {
-    const { advance, setMessage } = usePreloaderContext();
+    const { advance, setStatus } = usePreloader();
     const videoRef = useRef<HTMLVideoElement>(null);
 
     useEffect(() => {
-        setMessage(`loading video ${src}`);
+        setStatus({ type: 'loadingVideo', src, percent: 0 });
         const intervalId = setInterval(interval, INTERVAL_MS);
         return () => clearInterval(intervalId);
     }, []);
@@ -25,7 +25,7 @@ export function PreloaderVideo({ src }: { src: string }) {
             const percentLoaded = (bufferedEnd / duration) * 100;
             video.currentTime = bufferedEnd;
 
-            setMessage(`Loading: ${Math.round(percentLoaded)}%`);
+            setStatus({ type: 'loadingVideo', src, percent: percentLoaded });
 
             // 完全に読み込まれた場合
             if (bufferedEnd === duration) {

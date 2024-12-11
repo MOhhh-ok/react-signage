@@ -1,8 +1,7 @@
-import { createContext, ReactNode, useContext } from 'react';
-import { SignageItem } from '../../types';
+import { useContext } from 'react';
 import { PreloaderContext } from './contexts';
 
-export function usePreloaderContext() {
+export function usePreloader() {
     const context = useContext(PreloaderContext);
     if (!context) {
         throw new Error('usePreloaderContext must be used within a Preloader');

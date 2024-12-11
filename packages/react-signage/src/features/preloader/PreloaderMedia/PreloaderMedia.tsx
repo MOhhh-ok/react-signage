@@ -1,9 +1,9 @@
-import { usePreloaderContext } from "../hooks";
+import { usePreloader } from "../hooks";
 import { PreloaderImage } from "./PreloaderImage";
 import { PreloaderVideo } from "./PreloaderVideo";
 
 export function PreloaderMedia() {
-    const { items, currentIndex } = usePreloaderContext();
+    const { items, currentIndex } = usePreloader();
 
     const type = items[currentIndex]?.type;
 

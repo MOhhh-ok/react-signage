@@ -14,8 +14,8 @@
             "import": "./dist/index.js"
         },
         "./preloader": {
-            "types": "./dist/Preloader/index.d.ts",
-            "import": "./dist/Preloader/index.js"
+            "types": "./dist/features/preloader/index.d.ts",
+            "import": "./dist/features/preloader/index.js"
         }
     },
     "type": "module",
