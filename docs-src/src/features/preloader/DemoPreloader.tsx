@@ -3,7 +3,7 @@ import { useState } from "react";
 import { demoItems } from "../../demoItems";
 
 export function DemoPreloader() {
-    const [open, setOpen] = useState(false);
+    const [open, setOpen] = useState(true);
 
     return <div>
         {!open
