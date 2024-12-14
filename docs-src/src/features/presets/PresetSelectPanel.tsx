@@ -10,11 +10,11 @@ export function PresetSelectPanel() {
 }
 
 function Select() {
-    const { preset, setPreset } = usePreset();
+    const { preset, setPresetName } = usePreset();
 
     return <select
         value={preset.name}
-        onChange={(e) => setPreset(presets.find(p => p.name === e.target.value)!)}
+        onChange={(e) => setPresetName(e.target.value)}
     >
         {presets.map((preset) => (
             <option key={preset.name} value={preset.name}>

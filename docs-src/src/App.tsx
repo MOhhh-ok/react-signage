@@ -4,21 +4,24 @@ import { usePreset } from './features/presets/context';
 import { PresetProvider } from './features/presets/PresetProvider';
 import { PresetSelectPanel } from './features/presets/PresetSelectPanel';
 import { DemoPreloader } from './features/preloader/DemoPreloader';
+import { BrowserRouter } from 'react-router';
 
 export default function App() {
     return <>
-        <div style={{ width: "600px", margin: "auto" }}>
-            <h1 style={{ fontSize: "2rem", borderBottom: "1px solid #aaa", marginBottom: "1em" }}>React Signage Demo</h1>
-            <PresetProvider>
-                <h2>Preload</h2>
-                <DemoPreloader />
-                <h2>Signage</h2>
-                <div style={{ display: "flex", gap: "20px" }}>
-                    <PresetSelectPanel />
-                    <Test />
-                </div>
-            </PresetProvider>
-        </div>
+        <BrowserRouter>
+            <div style={{ width: "600px", margin: "auto" }}>
+                <h1 style={{ fontSize: "2rem", borderBottom: "1px solid #aaa", marginBottom: "1em" }}>React Signage Demo</h1>
+                <PresetProvider>
+                    <h2>Preload</h2>
+                    <DemoPreloader />
+                    <h2>Signage</h2>
+                    <div style={{ display: "flex", gap: "20px" }}>
+                        <PresetSelectPanel />
+                        <Test />
+                    </div>
+                </PresetProvider>
+            </div>
+        </BrowserRouter>
     </>
 }
 
