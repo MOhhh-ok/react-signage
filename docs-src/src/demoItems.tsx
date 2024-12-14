@@ -6,10 +6,15 @@ export const demoItems = {
         src: BASE_PATH + '/img1.jpg',
         second: 0,
     },
-    img_short: {
+    img_short1: {
         type: 'image',
-        src: BASE_PATH + '/img2.jpt',
-        second: 1,
+        src: BASE_PATH + '/img2.jpg',
+        second: 2,
+    },
+    img_middle1: {
+        type: 'image',
+        src: BASE_PATH + '/img3.jpg',
+        second: 5,
     },
     video1: {
         type: 'video',
