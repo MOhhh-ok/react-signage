@@ -7,6 +7,7 @@ import { usePreset } from './features/presets/PresetSelectPanel/context';
 export default function App() {
     return <>
         <div style={{ width: "600px", margin: "auto" }}>
+            <h1 style={{ fontSize: "2rem", borderBottom: "1px solid #aaa", marginBottom: "1em" }}>React Signage Demo</h1>
             <PresetProvider>
                 <div style={{ display: "flex", gap: "20px" }}>
                     <PresetSelectPanel />

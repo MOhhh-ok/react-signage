@@ -7,6 +7,9 @@ This is a react library for signage.
 - Preloader to cache to browser (optional)
 - If the browser does not support the Fullscreen API, use a pseudo fullscreen display.
 
+See the [demo site](https://mohhh-ok.github.io/react-signage/) for example.
+
+
 
 ## Install
 
