@@ -1,8 +1,13 @@
-import { DebugProvider, SignageItem } from "@masa-dev/react-signage";
-import { LiteSignage } from "@masa-dev/react-signage/lite";
+import { DebugProvider, Signage, SignageItem } from "@masa-dev/react-signage";
 import { useState } from "react";
+import { demoItems } from "../demoItems";
 
-export function Test2(props: { items: SignageItem[] }) {
+const items = [
+    // demoItems.img_infinite,
+    demoItems.video1,
+]
+
+export function FullscreenTest() {
     const [play, setPlay] = useState(false);
     const [fullScreen, setFullScreen] = useState(false);
 
@@ -10,7 +15,7 @@ export function Test2(props: { items: SignageItem[] }) {
         <button onClick={() => setPlay(prev => !prev)}>{play ? "pause" : "play"}</button>
         <input type="checkbox" checked={fullScreen} onChange={e => setFullScreen(e.target.checked)} />
         <DebugProvider debug={true}>
-            <LiteSignage items={props.items} play={play} fullScreen={fullScreen} />
+            <Signage items={items} play={play} fullScreen={fullScreen} />
         </DebugProvider>
     </>
 }

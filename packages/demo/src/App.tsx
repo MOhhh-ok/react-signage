@@ -1,10 +1,13 @@
-import { ItemChangeTest } from './ItemChangeTest';
-import { PreloaderTest } from './PreloaderTest';
+import { ItemChangeTest } from './testComponents/ItemChangeTest';
+import { PreloaderTest } from './testComponents/PreloaderTest';
+import { Test } from './Test';
+import { FullscreenTest } from './testComponents/FullscreenTest';
 
 export default function App() {
     return <>
-        <ItemChangeTest />
-        <PreloaderTest />
+        <FullscreenTest />
+        {/* <ItemChangeTest />
+        <PreloaderTest /> */}
     </>
 }
 
