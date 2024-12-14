@@ -8,7 +8,7 @@ export function DemoPreloader() {
     return <div>
         {!open
             &&
-            <button onClick={() => setOpen(true)}>Open</button>
+            <button onClick={() => setOpen(true)}>Open Preloader</button>
         }
         {open
             &&
