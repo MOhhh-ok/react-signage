@@ -1,1 +1,1 @@
-export const BASE_PATH = '/react_signage';
+export const BASE_PATH = '/react-signage';
