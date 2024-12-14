@@ -1,4 +1,4 @@
-import { demoItems } from '../../../demoItems';
+import { demoItems } from '../../demoItems';
 
 export const presets = [
     {

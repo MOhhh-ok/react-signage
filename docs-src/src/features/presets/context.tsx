@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, createContext, useContext } from "react";
-import { Preset } from "../../../types";
+import { Preset } from "../../types";
 
 type ContextType = {
     preset: Preset

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Preset } from '../../../types';
+import { Preset } from '../../types';
 import { Context } from './context';
 import { presets } from './presets';
 

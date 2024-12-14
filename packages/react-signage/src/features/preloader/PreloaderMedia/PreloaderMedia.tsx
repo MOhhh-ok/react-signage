@@ -2,7 +2,16 @@ import { usePreloader } from "../hooks";
 import { PreloaderImage } from "./PreloaderImage";
 import { PreloaderVideo } from "./PreloaderVideo";
 
-export function PreloaderMedia() {
+const DEFAULT_WIDTH = 300;
+const DEFAULT_HEIGHT = 200;
+
+export type PreloaderMediaProps = {
+    width?: number;
+    height?: number;
+}
+
+export function PreloaderMedia(props: PreloaderMediaProps) {
+    const { width = DEFAULT_WIDTH, height = DEFAULT_HEIGHT } = props;
     const { items, currentIndex } = usePreloader();
 
     const item = items[currentIndex];
@@ -10,14 +19,8 @@ export function PreloaderMedia() {
 
     const type = item.type;
 
-    switch (type) {
-        case 'image':
-            return <PreloaderImage src={item.src} />;
-        case 'video':
-            return <PreloaderVideo src={item.src} />;
-        default:
-            return null;
-    }
+    return <div style={{ maxWidth: width, maxHeight: height, width, height }}>
+        {type == 'image' && <PreloaderImage src={item.src} />}
+        {type == 'video' && <PreloaderVideo src={item.src} />}
+    </div>
 }
-
-
