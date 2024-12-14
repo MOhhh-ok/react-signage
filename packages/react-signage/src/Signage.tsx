@@ -190,5 +190,6 @@ const Video = forwardRef<HTMLVideoElement, VideoProps>(
             onError={onVideoError}
             onEnded={onEnded}
             onWaiting={() => debugMessage({ message: 'video waiting', severity: 'warning' })}
+            playsInline={true}
         />
     });
