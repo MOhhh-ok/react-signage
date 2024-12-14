@@ -1,1 +1,1 @@
-{"root":["./src/app.tsx","./src/basicusage.tsx","./src/itemchangetest.tsx","./src/test.tsx","./src/test2.tsx","./src/main.tsx","./src/vite-env.d.ts"],"version":"5.6.3"}
+{"root":["./src/app.tsx","./src/basicusage.tsx","./src/test.tsx","./src/demoitems.tsx","./src/main.tsx","./src/vite-env.d.ts","./src/testcomponents/fullscreentest.tsx","./src/testcomponents/itemchangetest.tsx","./src/testcomponents/preloadertest.tsx"],"version":"5.6.3"}

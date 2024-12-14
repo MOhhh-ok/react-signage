@@ -1,4 +1,4 @@
-import { DebugProvider, Signage, SignageItem, SignageProvider } from '@masa-dev/react-signage';
+import { DebugProvider, Signage, SignageItem } from '@masa-dev/react-signage';
 import { PreloaderMedia, PreloaderMessage, PreloaderProvider } from '@masa-dev/react-signage/preloader';
 import { useState } from 'react';
 
@@ -42,14 +42,11 @@ export function BasicUsage() {
 
         <p>Inline Container</p>
         <DebugProvider debug={false}>
-            <SignageProvider
+            <Signage
                 play={play}
                 fullScreen={fullScreen}
                 items={items}
-                onSlideChange={params => { console.log(params) }}
-            >
-                <Signage />
-            </SignageProvider>
+            />
         </DebugProvider>
 
         <p>Preloader</p>
