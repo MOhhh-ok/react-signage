@@ -1,27 +1,28 @@
 import { usePreset } from "./context";
 import { presets } from "./presets";
-
+import { MenuItem, Select } from "@mui/material";
 export function PresetSelectPanel() {
     return <div style={{ display: "flex", flexDirection: "column" }}>
-        Select Preset<br />
-        <Select />
+        <div style={{ fontSize: "0.8em" }}>Preset</div>
+        <SelectComponent />
         <Display />
     </div>
 }
 
-function Select() {
+function SelectComponent() {
     const { preset, setPresetName } = usePreset();
 
-    return <select
+    return <Select
         value={preset.name}
         onChange={(e) => setPresetName(e.target.value)}
+        label="Select Preset"
     >
         {presets.map((preset) => (
-            <option key={preset.name} value={preset.name}>
+            <MenuItem key={preset.name} value={preset.name}>
                 {preset.name}
-            </option>
+            </MenuItem>
         ))}
-    </select>
+    </Select>
 }
 
 function Display() {
