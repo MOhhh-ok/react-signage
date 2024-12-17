@@ -45,6 +45,7 @@ function Test() {
             items={preset.items}
             play={play}
             fullScreen={fullScreen}
+            onFullScreenChange={isFullscreen => setFullScreen(isFullscreen)}
         />
     </Stack>
 }

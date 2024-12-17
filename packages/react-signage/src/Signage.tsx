@@ -14,6 +14,7 @@ export type SignageProps = {
     items: SignageItem[];
     play: boolean;
     fullScreen: boolean;
+    onFullScreenChange?: (fullScreen: boolean) => void;
     style?: CSSProperties;
     mute?: boolean;
 }
@@ -26,7 +27,7 @@ type IndexData = {
 
 export const Signage = forwardRef<SignageRefType, SignageProps>(
     function Signage(props, ref) {
-        const { play, fullScreen, mute, items } = props;
+        const { play, fullScreen, mute, items, onFullScreenChange } = props;
         const [indexData, setIndexData] = useState<IndexData>({ index: 0, changedAt: 0 });
         const item = items[indexData.index];
         const imgRef = useRef<HTMLImageElement>(null);
@@ -39,8 +40,16 @@ export const Signage = forwardRef<SignageRefType, SignageProps>(
             advanceNext,
         }));
 
-        const itemsJson = useMemo(() => JSON.stringify(items), [items]);
+        useEffect(() => {
+            const fullscreenchanged = () => {
+                const isFullScreen = !!document.fullscreenElement;
+                onFullScreenChange?.(isFullScreen);
+            }
+            window.addEventListener('fullscreenchange', fullscreenchanged);
+            return () => window.removeEventListener('fullscreenchange', fullscreenchanged);
+        });
 
+        const itemsJson = useMemo(() => JSON.stringify(items), [items]);
         useEffect(() => {
             debugMessage({ message: `items changed`, severity: 'info' });
             setIndexData(prev => {
@@ -51,34 +60,39 @@ export const Signage = forwardRef<SignageRefType, SignageProps>(
 
         useEffect(() => {
             if (!play) return;
-            startItem();
+            startItem({ isFirst: false });
         }, [indexData]);
 
         useEffect(() => {
-            debugMessage({ message: `play state changed to: ${play}`, severity: 'info' });
             if (play) {
-                startItem();
+                startItem({ isFirst: true });
             } else {
                 stopItem();
             }
             return () => stopItem();
         }, [play]);
 
-
-        function startItem() {
+        function startItem(params: { isFirst: boolean }) {
             if (!videoRef.current) return;
-            // 古い端末用に、一旦ダミー動画を再生させる
-            videoRef.current.src = interactionDummyVideo;
-            videoRef.current.play().then(() => {
+
+            const process = () => {
+                fadeInSpringApi.start({ from: { opacity: 0 }, to: { opacity: 1 }, config: { duration: 1000 } });
                 setElements();
                 resetEvents();
-                fadeInSpringApi.start({ from: { opacity: 0 }, to: { opacity: 1 }, config: { duration: 1000 } });
-            });
+            };
+            // 古い端末用に、一旦ダミー動画を再生させる
+            if (params.isFirst) {
+                videoRef.current.src = interactionDummyVideo;
+                videoRef.current.play().then(process);
+            } else {
+                process();
+            }
         }
 
         function stopItem() {
             videoRef.current?.pause();
             clearTimeout(timerRef.current)
+            changeShow('none');
         }
 
 
@@ -96,6 +110,7 @@ export const Signage = forwardRef<SignageRefType, SignageProps>(
                 case 'image':
                     imgRef.current?.setAttribute('src', item.src);
                     videoRef.current?.pause();
+                    changeShow('image');
                     break;
                 case 'video':
                     if (videoRef.current) {
@@ -103,8 +118,25 @@ export const Signage = forwardRef<SignageRefType, SignageProps>(
                         debugMessage({ message: 'start video', severity: 'info' });
                         videoRef.current.currentTime = 0;
                         videoRef.current.play();
+                        changeShow('video');
                     }
                     break;
+            }
+        }
+
+        function changeShow(type: 'image' | 'video' | 'none') {
+            if (!imgRef.current || !videoRef.current) {
+                return;
+            }
+            if (type == 'image') {
+                imgRef.current.style.display = 'block';
+                videoRef.current.style.display = 'none';
+            } else if (type == 'video') {
+                imgRef.current.style.display = 'none';
+                videoRef.current.style.display = 'block';
+            } else if (type == 'none') {
+                imgRef.current.style.display = 'none';
+                videoRef.current.style.display = 'none';
             }
         }
 
@@ -119,25 +151,21 @@ export const Signage = forwardRef<SignageRefType, SignageProps>(
             }
         }
 
-
         return <Container play={play} fullScreen={fullScreen} style={{ ...props.style, position: "relative" }}>
             <animated.img
                 ref={imgRef}
                 style={{
                     ...ItemBaseStyle,
-                    ...(item?.type != 'image' ? ItemHideStyle : {}),
-                    ...fadeInSpring
+                    ...fadeInSpring,
                 }}
             />
             <Video
                 ref={videoRef}
                 style={{
                     ...ItemBaseStyle,
-                    ...(item?.type != 'video' ? ItemHideStyle : {}),
-                    ...fadeInSpring
+                    ...fadeInSpring,
                 }}
                 onEnded={advanceNext}
-                // onRetryOver={advanceNext}
                 muted={mute}
             />
             {debug && <Toaster position="bottom-right" />}
