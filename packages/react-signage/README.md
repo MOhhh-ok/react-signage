@@ -2,7 +2,7 @@
 
 This is a react library for signage.
 
-- Auto slide image and video with fade in.
+- Auto slide image and video with cross fade.
 - Can toggle fullscreen.
 - Preloader to cache to browser (optional)
 - If the browser does not support the Fullscreen API, use a pseudo fullscreen display.

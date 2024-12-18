@@ -1,21 +1,24 @@
 import { animated, useSpring } from '@react-spring/web';
-import { CSSProperties, forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState, VideoHTMLAttributes } from "react";
-import { SignageItem, SignageRefType } from "./types";
-import { Container } from "./Container";
-import { ItemBaseStyle, ItemHideStyle } from "./styles";
+import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { Toaster } from 'react-hot-toast';
 import { interactionDummyVideo } from './assets/interactionDummyVideo';
+import { DEFAULT_SIZE, FADE_DURATION } from './consts';
+import { Container } from "./Container";
 import { useDebug } from './features/debug/useDebug';
+import { FadeoutOverlay, useFadeoutOverlay } from './features/fadeOverlay/fadeOverlay';
+import { FullScreenListener } from './features/fullscreen/FullScreenListener';
+import { ItemBaseStyle } from "./styles";
+import { SignageItem, SignageRefType } from "./types";
+import { Video } from './features/media/Video';
+import { Img } from './features/media/Img';
 
-const MAX_RETRY_SPAN = 10_000;
-const MIN_RETRY_SPAN = 1000;
 
 export type SignageProps = {
     items: SignageItem[];
     play: boolean;
     fullScreen: boolean;
     onFullScreenChange?: (fullScreen: boolean) => void;
-    style?: CSSProperties;
+    size?: { width: number, height: number };
     mute?: boolean;
 }
 
@@ -27,11 +30,12 @@ type IndexData = {
 
 export const Signage = forwardRef<SignageRefType, SignageProps>(
     function Signage(props, ref) {
-        const { play, fullScreen, mute, items, onFullScreenChange } = props;
+        const { play, fullScreen, mute, items, onFullScreenChange, size = DEFAULT_SIZE } = props;
         const [indexData, setIndexData] = useState<IndexData>({ index: 0, changedAt: 0 });
         const item = items[indexData.index];
         const imgRef = useRef<HTMLImageElement>(null);
         const videoRef = useRef<HTMLVideoElement>(null);
+        const { ref: overlayRef } = useFadeoutOverlay();
         const timerRef = useRef<number | undefined>(undefined);
         const { debug, debugMessage } = useDebug();
         const [fadeInSpring, fadeInSpringApi] = useSpring(() => ({}));
@@ -39,15 +43,6 @@ export const Signage = forwardRef<SignageRefType, SignageProps>(
         useImperativeHandle(ref, () => ({
             advanceNext,
         }));
-
-        useEffect(() => {
-            const fullscreenchanged = () => {
-                const isFullScreen = !!document.fullscreenElement;
-                onFullScreenChange?.(isFullScreen);
-            }
-            window.addEventListener('fullscreenchange', fullscreenchanged);
-            return () => window.removeEventListener('fullscreenchange', fullscreenchanged);
-        });
 
         const itemsJson = useMemo(() => JSON.stringify(items), [items]);
         useEffect(() => {
@@ -76,7 +71,8 @@ export const Signage = forwardRef<SignageRefType, SignageProps>(
             if (!videoRef.current) return;
 
             const process = () => {
-                fadeInSpringApi.start({ from: { opacity: 0 }, to: { opacity: 1 }, config: { duration: 1000 } });
+                overlayRef.current?.startFadeout({ mediaRef: [imgRef, videoRef].filter(isVisible)[0], duration: FADE_DURATION });
+                fadeInSpringApi.start({ from: { opacity: 0 }, to: { opacity: 1 }, config: { duration: FADE_DURATION } });
                 setElements();
                 resetEvents();
             };
@@ -151,73 +147,34 @@ export const Signage = forwardRef<SignageRefType, SignageProps>(
             }
         }
 
-        return <Container play={play} fullScreen={fullScreen} style={{ ...props.style, position: "relative" }}>
-            <animated.img
-                ref={imgRef}
-                style={{
-                    ...ItemBaseStyle,
-                    ...fadeInSpring,
-                }}
-            />
-            <Video
-                ref={videoRef}
-                style={{
-                    ...ItemBaseStyle,
-                    ...fadeInSpring,
-                }}
-                onEnded={advanceNext}
-                muted={mute}
-            />
-            {debug && <Toaster position="bottom-right" />}
-        </Container>
+        return <>
+            <FullScreenListener onFullScreenChange={onFullScreenChange} />
+            <Container play={play} fullScreen={fullScreen} style={{ position: "relative", ...size }}>
+                <Img
+                    ref={imgRef}
+                    style={{
+                        ...ItemBaseStyle,
+                        ...fadeInSpring,
+                    }}
+                />
+                <Video
+                    ref={videoRef}
+                    style={{
+                        ...ItemBaseStyle,
+                        ...fadeInSpring,
+                    }}
+                    onEnded={advanceNext}
+                    muted={mute}
+                />
+                <FadeoutOverlay ref={overlayRef} {...size} />
+                {debug && <Toaster position="bottom-right" />}
+            </Container>
+        </>
     }
 );
 
-type VideoProps = VideoHTMLAttributes<HTMLVideoElement> & {
-    // onRetryOver?: () => void;
+
+function isVisible(ref: React.RefObject<HTMLElement>) {
+    if (!ref.current) return false;
+    return ref.current.style.display != 'none';
 }
-
-const Video = forwardRef<HTMLVideoElement, VideoProps>(
-    function Video(props, ref) {
-        const { debugMessage } = useDebug();
-        const retrySpanRef = useRef<number>(1000);
-        const retryTimerRef = useRef<number | undefined>(undefined);
-
-        useEffect(() => {
-            clearTimeout(retryTimerRef.current);
-        }, [props.src]);
-
-        function onVideoError() {
-            if (typeof ref === 'function' || !ref?.current?.src) return;
-            debugMessage({ message: 'video error. retrying...', severity: 'error' })
-            clearTimeout(retryTimerRef.current);
-            retryTimerRef.current = setTimeout(() => {
-                // debugMessage({ message: `retry. span: ${retrySpanRef.current}ms`, severity: 'info' });
-                ref.current?.load();
-                ref.current?.play();
-                upSpan();
-            }, retrySpanRef.current);
-        }
-
-        function upSpan() {
-            retrySpanRef.current = Math.min(retrySpanRef.current * 1.2, MAX_RETRY_SPAN);
-        }
-
-        function resetSpan() {
-            retrySpanRef.current = MIN_RETRY_SPAN;
-        }
-
-        function onEnded(ev: any) {
-            resetSpan();
-            return props.onEnded?.(ev);
-        }
-
-        return <animated.video
-            ref={ref}
-            {...props}
-            onError={onVideoError}
-            onEnded={onEnded}
-            onWaiting={() => debugMessage({ message: 'video waiting', severity: 'warning' })}
-            playsInline={true}
-        />
-    });

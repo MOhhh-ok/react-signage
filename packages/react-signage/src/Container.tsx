@@ -8,6 +8,8 @@ const ContainerBaseStyle: CSSProperties = {
 
 const FallbackFullscreenStyle: CSSProperties = {
     position: 'fixed',
+    margin: 0,
+    padding: 0,
     top: 0,
     left: 0,
     width: '100%',
