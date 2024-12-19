@@ -19,6 +19,7 @@ export const presets = [
     },
     {
         name: 'Video and Image',
-        items: [demoItems.video1, demoItems.img_short1],
+        items: [demoItems.video1, demoItems.img_middle1],
     },
+    { name: 'None', items: [] },
 ];

@@ -32,7 +32,7 @@ export const Signage = forwardRef<SignageRefType, SignageProps>(
     function Signage(props, ref) {
         const { play, fullScreen, mute, items, onFullScreenChange, size = DEFAULT_SIZE } = props;
         const [indexData, setIndexData] = useState<IndexData>({ index: 0, changedAt: 0 });
-        const item = items[indexData.index];
+        const item: SignageItem | undefined = items[indexData.index];
         const imgRef = useRef<HTMLImageElement>(null);
         const videoRef = useRef<HTMLVideoElement>(null);
         const { ref: overlayRef } = useFadeoutOverlay();
@@ -102,6 +102,10 @@ export const Signage = forwardRef<SignageRefType, SignageProps>(
         }
 
         function setElements() {
+            if (!item) {
+                videoRef.current?.pause();
+                return changeShow('none');
+            };
             switch (item.type) {
                 case 'image':
                     imgRef.current?.setAttribute('src', item.src);
