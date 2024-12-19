@@ -9,6 +9,7 @@ import { H1, H2 } from '@masa-dev/mui-enhance';
 import { Button, FormControlLabel, Stack, Switch, ThemeProvider } from '@mui/material';
 import { globalTheme } from './theme';
 import './App.css';
+import { NoChromeWarning } from './SafariWarning';
 
 export default function App() {
     return <>
@@ -17,6 +18,7 @@ export default function App() {
                 <PresetProvider>
                     <main>
                         <H1>React Signage Demo</H1>
+                        <NoChromeWarning />
                         <H2>Preload</H2>
                         <DemoPreloader />
                         <H2>Signage</H2>

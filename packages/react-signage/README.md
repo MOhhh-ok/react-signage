@@ -9,7 +9,9 @@ This is a react library for signage.
 
 See the [demo site](https://mohhh-ok.github.io/react-signage/) for example.
 
+## Support browser
 
+This library supports Chrome.
 
 ## Install
 

@@ -22,7 +22,7 @@ export function PreloaderProvider(props: PreloaderProviderProps) {
     useEffect(() => {
         if (items.length == 0) {
             setStatus({ type: 'finished' });
-            console.log('preload no items');
+            // console.log('preload no items');
         } else {
             setStatus({ type: 'pending' });
             setCurrentIndex(0);
@@ -37,9 +37,9 @@ export function PreloaderProvider(props: PreloaderProviderProps) {
             const newIndex = prevIndex + 1;
             if (newIndex >= items.length) {
                 setStatus({ type: 'finished' });
-                console.log('preload finished');
+                // console.log('preload finished');
             } else {
-                console.log('preload advance to ', newIndex);
+                // console.log('preload advance to ', newIndex);
             }
             return newIndex;
         });

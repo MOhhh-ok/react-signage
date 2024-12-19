@@ -67,7 +67,7 @@ export const FadeoutOverlay = forwardRef(
             const { xOffset, yOffset, newWidth, newHeight } = calculateOffset(
                 srcSize,
                 { width: canvas.width, height: canvas.height });
-            console.log({ xOffset, yOffset, newWidth, newHeight });
+            // console.log({ xOffset, yOffset, newWidth, newHeight });
 
             const offscreenCanvas = offscreenCanvasRef.current;
             if (!offscreenCanvas) {
