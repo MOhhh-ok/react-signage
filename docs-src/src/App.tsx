@@ -22,10 +22,10 @@ export default function App() {
                         <H2>Preload</H2>
                         <DemoPreloader />
                         <H2>Signage</H2>
-                        <div style={{ display: "flex", gap: "20px" }}>
+                        <Stack direction={'row'} spacing={2}>
                             <PresetSelectPanel />
                             <Test />
-                        </div>
+                        </Stack>
                     </main>
                 </PresetProvider>
             </ThemeProvider>
@@ -38,19 +38,31 @@ function Test() {
     const [play, setPlay] = useState(false);
     const [fullScreen, setFullScreen] = useState(false);
     const [mute, setMute] = useState(false);
+    const [useDbCache, setUseDbCache] = useState(false);
 
     return <Stack direction="column" spacing={1}>
         <Stack direction="row" spacing={2}>
-            <Button variant="contained" onClick={() => setPlay(!play)}>{play ? 'Stop' : 'Play'}</Button>
-            <FormControlLabel label="FullScreen" control={<Switch checked={fullScreen} onChange={ev => setFullScreen(ev.target.checked)} />} />
-            <FormControlLabel label="Mute" control={<Switch checked={mute} onChange={ev => setMute(ev.target.checked)} />} />
+            <Stack direction="column" spacing={2}>
+                <Button
+                    variant="contained"
+                    sx={{ width: "120px" }}
+                    onClick={() => setPlay(!play)}>{play ? 'Stop' : 'Play'}
+                </Button>
+                <Signage
+                    items={preset.items}
+                    play={play}
+                    fullScreen={fullScreen}
+                    onFullScreenChange={isFullscreen => setFullScreen(isFullscreen)}
+                    mute={mute}
+                    size={{ width: 300, height: 200 }}
+                    useDbCache={useDbCache}
+                />
+                <Stack direction="row" spacing={0} >
+                    <FormControlLabel label="FullScreen" control={<Switch checked={fullScreen} onChange={ev => setFullScreen(ev.target.checked)} />} />
+                    <FormControlLabel label="Mute" control={<Switch checked={mute} onChange={ev => setMute(ev.target.checked)} />} />
+                    <FormControlLabel label="DB Cache" control={<Switch checked={useDbCache} onChange={ev => setUseDbCache(ev.target.checked)} />} />
+                </Stack>
+            </Stack>
         </Stack>
-        <Signage
-            items={preset.items}
-            play={play}
-            fullScreen={fullScreen}
-            onFullScreenChange={isFullscreen => setFullScreen(isFullscreen)}
-            mute={mute}
-        />
     </Stack>
 }

@@ -12,20 +12,15 @@ export function useCacher() {
     }, []);
 
     async function getOrFetchAndCache(url: string) {
+        const status = await db.mediaStatus.get(url);
+        if (status?.status === 'success') {
+            const data = await db.mediaData.get(url);
+            if (data?.blob) {
+                return URL.createObjectURL(data.blob);
+            }
+        }
+        fetchAndCache(url);
         return url;
-        // const status = await db.mediaStatus.get(url);
-        // console.log({ status })
-        // if (status?.status === 'success') {
-        //     const data = await db.mediaData.get(url);
-        //     if (data?.blob) {
-        //         console.log('returning cached ', url);
-        //         const newUrl = URL.createObjectURL(data.blob);
-        //         console.log({ newUrl });
-        //         return newUrl;
-        //     }
-        // }
-        // fetchAndCache(url);
-        // return url;
     }
 
     async function fetchAndCache(url: string, ops?: Pick<AxiosRequestConfig, 'onDownloadProgress'>) {

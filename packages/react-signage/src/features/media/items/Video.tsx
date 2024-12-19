@@ -1,15 +1,15 @@
 import { animated, useSpring } from "@react-spring/web";
 import { VideoHTMLAttributes, forwardRef, useImperativeHandle, useRef } from "react";
 import { FADE_DURATION } from "../../../consts";
+import { useCacher } from "../../db";
 import { useDebug } from "../../debug/useDebug";
+import { ItemBaseStyle } from "./consts";
 import { useVideoError } from "./hooks/useVideoError";
 import { MediaItemRefBase } from "./types";
-import { ItemBaseStyle } from "./consts";
-import { useDataStore } from "../../db/useDataStore";
-import { useCacher } from "../../db";
 
 type VideoProps = VideoHTMLAttributes<HTMLVideoElement> & {
-    muted?: boolean;
+    muted: boolean | undefined;
+    useDbCache: boolean | undefined;
 }
 
 export interface VideoRef extends MediaItemRefBase {
@@ -21,6 +21,7 @@ export interface VideoRef extends MediaItemRefBase {
 
 export const Video = forwardRef<VideoRef, VideoProps>(
     function Video(props, ref) {
+        const { useDbCache } = props;
         const elementRef = useRef<HTMLVideoElement>(null);
         const { debugMessage } = useDebug();
         const { handleVideoError, resetSpan } = useVideoError({ ref: elementRef });
@@ -41,7 +42,7 @@ export const Video = forwardRef<VideoRef, VideoProps>(
             },
             setSrc: async (src: string) => {
                 if (!elementRef.current) return;
-                const newSrc = await getOrFetchAndCache(src);
+                const newSrc = useDbCache ? await getOrFetchAndCache(src) : src;
                 elementRef.current.src = newSrc;
             },
             play: async () => {

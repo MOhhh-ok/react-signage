@@ -17,6 +17,7 @@ export type SignageProps = {
     onFullScreenChange?: (fullScreen: boolean) => void;
     size?: { width: number, height: number };
     mute?: boolean;
+    useDbCache?: boolean;
 }
 
 type IndexData = {
@@ -27,7 +28,7 @@ type IndexData = {
 
 export const Signage = forwardRef<SignageRefType, SignageProps>(
     function Signage(props, ref) {
-        const { play, fullScreen, mute, items, onFullScreenChange, size = DEFAULT_SIZE } = props;
+        const { play, fullScreen, mute, items, onFullScreenChange, size = DEFAULT_SIZE, useDbCache } = props;
         const [indexData, setIndexData] = useState<IndexData>({ index: 0, changedAt: 0 });
         const item: SignageItem | undefined = items[indexData.index];
         const imgRef = useRef<ImgRef>(null);
@@ -154,6 +155,7 @@ export const Signage = forwardRef<SignageRefType, SignageProps>(
                     ref={videoRef}
                     onEnded={advanceNext}
                     muted={mute}
+                    useDbCache={useDbCache}
                 />
                 <FadeoutOverlay ref={overlayRef} {...size} />
                 {debug && <Toaster position="bottom-right" />}
