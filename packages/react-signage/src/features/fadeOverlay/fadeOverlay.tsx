@@ -20,6 +20,7 @@ export function useFadeoutOverlay() {
 export const FadeoutOverlay = forwardRef(
     function FadeoutOverlay(props: Props, ref: React.Ref<FadeoutOverlayRef>) {
         const canvasRef = useRef<HTMLCanvasElement>(null);
+        const offscreenCanvasRef = useRef<HTMLCanvasElement>(null);
         const [spring, springApi] = useSpring(() => ({ opacity: 0 }));
 
         useImperativeHandle(ref, () => ({
@@ -52,15 +53,6 @@ export const FadeoutOverlay = forwardRef(
             return () => {
                 resizeObserver.disconnect();
             };
-
-
-            // window.addEventListener('resize', updateCanvasSize);
-            // parent?.addEventListener('resize', updateCanvasSize);
-
-            // return () => {
-            //     window.removeEventListener('resize', updateCanvasSize);
-            //     parent?.removeEventListener('resize', updateCanvasSize);
-            // };
         }, []);
 
         function captureFrame(mediaRef: MediaRef) {
@@ -71,19 +63,32 @@ export const FadeoutOverlay = forwardRef(
                 throw new Error('media or canvas is null');
             }
 
-            const context = canvas.getContext("2d");
-            if (!context) {
-                throw new Error('context is null');
-            }
-
-            context.fillStyle = '#000000';
-            context.fillRect(0, 0, canvas.width, canvas.height);
             const srcSize = getMediaSrcSize(media);
             const { xOffset, yOffset, newWidth, newHeight } = calculateOffset(
                 srcSize,
                 { width: canvas.width, height: canvas.height });
             console.log({ xOffset, yOffset, newWidth, newHeight });
-            context.drawImage(media, xOffset, yOffset, newWidth, newHeight);
+
+            const offscreenCanvas = offscreenCanvasRef.current;
+            if (!offscreenCanvas) {
+                throw new Error('offscreenCanvas is null');
+            }
+            offscreenCanvas.width = canvas.width;
+            offscreenCanvas.height = canvas.height
+            const offscreenContext = offscreenCanvas.getContext('2d');
+            if (!offscreenContext) {
+                throw new Error('offscreenContext is null');
+            }
+
+            offscreenContext.fillStyle = '#000000';
+            offscreenContext.fillRect(0, 0, canvas.width, canvas.height);
+            offscreenContext.drawImage(media, xOffset, yOffset, newWidth, newHeight);
+
+            const context = canvas.getContext("2d");
+            if (!context) {
+                throw new Error('context is null');
+            }
+            context.drawImage(offscreenCanvas, 0, 0, canvas.width, canvas.height);
         }
 
         return <>
@@ -94,6 +99,7 @@ export const FadeoutOverlay = forwardRef(
                     left: 0,
                     ...spring
                 }} />
+            <canvas ref={offscreenCanvasRef} style={{ display: 'none' }} />
         </>
     }
 );

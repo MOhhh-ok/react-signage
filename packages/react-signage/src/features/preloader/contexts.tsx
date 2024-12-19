@@ -1,5 +1,5 @@
-import { SignageItem } from "@/types";
-import { ReactNode, createContext } from "react";
+import { createContext } from "react";
+import { SignageItem } from "../../types";
 import { PreloaderStatus } from "./types";
 
 type ContextType = {

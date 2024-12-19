@@ -1,32 +1,31 @@
 import { CSSProperties, useEffect, useRef, useState } from "react";
+import { FallbackFullscreenStyle, ContainerBaseStyle } from "./consts";
 
-const ContainerBaseStyle: CSSProperties = {
-    background: "black",
-    width: '300px',
-    height: '200px',
+interface Props {
+    play: boolean,
+    fullScreen: boolean,
+    style?: CSSProperties,
+    onFullscreenChange?: (fullscreen: boolean) => void;
+    children: React.ReactNode,
 }
 
-const FallbackFullscreenStyle: CSSProperties = {
-    position: 'fixed',
-    margin: 0,
-    padding: 0,
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: '100%',
-    maxWidth: '100%',
-    maxHeight: '100%',
-    zIndex: 1000,
-};
-
-export function Container(props: { play: boolean, fullScreen: boolean, style?: CSSProperties, children: React.ReactNode }) {
-    const { fullScreen, style, play, children } = props;
+export function FullscreenableContainer(props: Props) {
+    const { fullScreen, style, play, children, onFullscreenChange } = props;
     const containerRef = useRef<HTMLDivElement>(null);
     const [fallbackStyle, setFallbackStyle] = useState<CSSProperties>({});
 
     useEffect(() => {
         handleFullScreen();
     }, [fullScreen, play]);
+
+    useEffect(() => {
+        const fullscreenchanged = () => {
+            const isFullScreen = !!document.fullscreenElement;
+            onFullscreenChange?.(isFullScreen);
+        }
+        window.addEventListener('fullscreenchange', fullscreenchanged);
+        return () => window.removeEventListener('fullscreenchange', fullscreenchanged);
+    });
 
     function handleFullScreen() {
         if (fullScreen && play) {

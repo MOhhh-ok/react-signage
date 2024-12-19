@@ -1,16 +1,13 @@
-import { animated, useSpring } from '@react-spring/web';
 import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { Toaster } from 'react-hot-toast';
 import { interactionDummyVideo } from './assets/interactionDummyVideo';
 import { DEFAULT_SIZE, FADE_DURATION } from './consts';
-import { Container } from "./Container";
 import { useDebug } from './features/debug/useDebug';
 import { FadeoutOverlay, useFadeoutOverlay } from './features/fadeOverlay/fadeOverlay';
-import { FullScreenListener } from './features/fullscreen/FullScreenListener';
-import { ItemBaseStyle } from "./styles";
+import { FullscreenableContainer } from "./features/fullscreen/FullscreenableContainer";
+import { Img, ImgRef } from './features/media/items/Img';
+import { Video, VideoRef } from './features/media/items/Video';
 import { SignageItem, SignageRefType } from "./types";
-import { Video } from './features/media/Video';
-import { Img } from './features/media/Img';
 
 
 export type SignageProps = {
@@ -33,12 +30,11 @@ export const Signage = forwardRef<SignageRefType, SignageProps>(
         const { play, fullScreen, mute, items, onFullScreenChange, size = DEFAULT_SIZE } = props;
         const [indexData, setIndexData] = useState<IndexData>({ index: 0, changedAt: 0 });
         const item: SignageItem | undefined = items[indexData.index];
-        const imgRef = useRef<HTMLImageElement>(null);
-        const videoRef = useRef<HTMLVideoElement>(null);
+        const imgRef = useRef<ImgRef>(null);
+        const videoRef = useRef<VideoRef>(null);
         const { ref: overlayRef } = useFadeoutOverlay();
         const timerRef = useRef<number | undefined>(undefined);
         const { debug, debugMessage } = useDebug();
-        const [fadeInSpring, fadeInSpringApi] = useSpring(() => ({}));
 
         useImperativeHandle(ref, () => ({
             advanceNext,
@@ -71,14 +67,13 @@ export const Signage = forwardRef<SignageRefType, SignageProps>(
             if (!videoRef.current) return;
 
             const process = () => {
-                overlayRef.current?.startFadeout({ mediaRef: [imgRef, videoRef].filter(isVisible)[0], duration: FADE_DURATION });
-                fadeInSpringApi.start({ from: { opacity: 0 }, to: { opacity: 1 }, config: { duration: FADE_DURATION } });
+                overlayRef.current?.startFadeout({ mediaRef: [imgRef.current?.elementRef, videoRef.current?.elementRef].filter(isVisible)[0], duration: FADE_DURATION });
                 setElements();
                 resetEvents();
             };
             // 古い端末用に、一旦ダミー動画を再生させる
             if (params.isFirst) {
-                videoRef.current.src = interactionDummyVideo;
+                videoRef.current.setSrc(interactionDummyVideo);
                 videoRef.current.play().then(process);
             } else {
                 process();
@@ -108,18 +103,18 @@ export const Signage = forwardRef<SignageRefType, SignageProps>(
             };
             switch (item.type) {
                 case 'image':
-                    imgRef.current?.setAttribute('src', item.src);
+                    imgRef.current?.fadeIn();
+                    imgRef.current?.setSrc(item.src);
                     videoRef.current?.pause();
                     changeShow('image');
                     break;
                 case 'video':
-                    if (videoRef.current) {
-                        videoRef.current.setAttribute('src', item.src);
-                        debugMessage({ message: 'start video', severity: 'info' });
-                        videoRef.current.currentTime = 0;
-                        videoRef.current.play();
-                        changeShow('video');
-                    }
+                    if (!videoRef.current) break;
+                    videoRef.current.fadeIn();
+                    videoRef.current.setSrc(item.src);
+                    debugMessage({ message: 'start video', severity: 'info' });
+                    videoRef.current.play();
+                    changeShow('video');
                     break;
             }
         }
@@ -129,14 +124,14 @@ export const Signage = forwardRef<SignageRefType, SignageProps>(
                 return;
             }
             if (type == 'image') {
-                imgRef.current.style.display = 'block';
-                videoRef.current.style.display = 'none';
+                imgRef.current.changeShow(true);
+                videoRef.current.changeShow(false);
             } else if (type == 'video') {
-                imgRef.current.style.display = 'none';
-                videoRef.current.style.display = 'block';
+                imgRef.current.changeShow(false);
+                videoRef.current.changeShow(true);
             } else if (type == 'none') {
-                imgRef.current.style.display = 'none';
-                videoRef.current.style.display = 'none';
+                imgRef.current.changeShow(false);
+                videoRef.current.changeShow(false);
             }
         }
 
@@ -152,33 +147,24 @@ export const Signage = forwardRef<SignageRefType, SignageProps>(
         }
 
         return <>
-            <FullScreenListener onFullScreenChange={onFullScreenChange} />
-            <Container play={play} fullScreen={fullScreen} style={{ position: "relative", ...size }}>
+            <FullscreenableContainer play={play} fullScreen={fullScreen} style={{ position: "relative", ...size }} onFullscreenChange={onFullScreenChange}>
                 <Img
                     ref={imgRef}
-                    style={{
-                        ...ItemBaseStyle,
-                        ...fadeInSpring,
-                    }}
                 />
                 <Video
                     ref={videoRef}
-                    style={{
-                        ...ItemBaseStyle,
-                        ...fadeInSpring,
-                    }}
                     onEnded={advanceNext}
                     muted={mute}
                 />
                 <FadeoutOverlay ref={overlayRef} {...size} />
                 {debug && <Toaster position="bottom-right" />}
-            </Container>
+            </FullscreenableContainer>
         </>
     }
 );
 
 
-function isVisible(ref: React.RefObject<HTMLElement>) {
-    if (!ref.current) return false;
+function isVisible(ref: React.RefObject<HTMLElement> | undefined) {
+    if (!ref?.current) return false;
     return ref.current.style.display != 'none';
 }

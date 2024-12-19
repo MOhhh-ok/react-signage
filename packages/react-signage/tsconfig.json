@@ -16,11 +16,6 @@
         ],
         "module": "ESNext",
         "moduleResolution": "bundler",
-        "paths": {
-            "@/*": [
-                "./src/*"
-            ]
-        }
     },
     "include": [
         "src/**/*.ts",

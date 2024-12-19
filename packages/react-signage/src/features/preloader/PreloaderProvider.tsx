@@ -1,5 +1,5 @@
-import { SignageItem } from "@/types";
 import { ReactNode, useEffect, useMemo, useState } from "react";
+import { SignageItem } from "../../types";
 import { PreloaderContext } from "./contexts";
 import { PreloaderStatus } from "./types";
 
