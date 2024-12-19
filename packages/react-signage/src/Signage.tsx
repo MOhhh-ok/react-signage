@@ -63,21 +63,20 @@ export const Signage = forwardRef<SignageRefType, SignageProps>(
             return () => stopItem();
         }, [play]);
 
-        function startItem(params: { isFirst: boolean }) {
+        async function startItem(params: { isFirst: boolean }) {
             if (!videoRef.current) return;
 
-            const process = () => {
+            const process = async () => {
                 overlayRef.current?.startFadeout({ mediaRef: [imgRef.current?.elementRef, videoRef.current?.elementRef].filter(isVisible)[0], duration: FADE_DURATION });
-                setElements();
+                await setElements();
                 resetEvents();
             };
             // 古い端末用に、一旦ダミー動画を再生させる
             if (params.isFirst) {
-                videoRef.current.setSrc(interactionDummyVideo);
-                videoRef.current.play().then(process);
-            } else {
-                process();
+                await videoRef.current.setSrc(interactionDummyVideo);
+                await videoRef.current.play();
             }
+            await process();
         }
 
         function stopItem() {
@@ -96,7 +95,7 @@ export const Signage = forwardRef<SignageRefType, SignageProps>(
             });
         }
 
-        function setElements() {
+        async function setElements() {
             if (!item) {
                 videoRef.current?.pause();
                 return changeShow('none');
@@ -104,16 +103,16 @@ export const Signage = forwardRef<SignageRefType, SignageProps>(
             switch (item.type) {
                 case 'image':
                     imgRef.current?.fadeIn();
-                    imgRef.current?.setSrc(item.src);
+                    await imgRef.current?.setSrc(item.src);
                     videoRef.current?.pause();
                     changeShow('image');
                     break;
                 case 'video':
                     if (!videoRef.current) break;
                     videoRef.current.fadeIn();
-                    videoRef.current.setSrc(item.src);
                     debugMessage({ message: 'start video', severity: 'info' });
-                    videoRef.current.play();
+                    await videoRef.current.setSrc(item.src);
+                    await videoRef.current.play();
                     changeShow('video');
                     break;
             }

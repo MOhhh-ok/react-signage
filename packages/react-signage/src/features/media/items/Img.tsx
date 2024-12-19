@@ -28,7 +28,7 @@ export const Img = forwardRef<ImgRef, Props>(
                     config: { duration: FADE_DURATION }
                 });
             },
-            setSrc: (src: string) => {
+            setSrc: async (src: string) => {
                 if (!elementRef.current) return;
                 elementRef.current.src = src;
             },

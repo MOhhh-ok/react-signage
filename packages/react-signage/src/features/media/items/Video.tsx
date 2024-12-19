@@ -5,9 +5,11 @@ import { useDebug } from "../../debug/useDebug";
 import { useVideoError } from "./hooks/useVideoError";
 import { MediaItemRefBase } from "./types";
 import { ItemBaseStyle } from "./consts";
+import { useDataStore } from "../../db/useDataStore";
+import { useCacher } from "../../db";
 
 type VideoProps = VideoHTMLAttributes<HTMLVideoElement> & {
-    // onRetryOver?: () => void;
+    muted?: boolean;
 }
 
 export interface VideoRef extends MediaItemRefBase {
@@ -23,6 +25,7 @@ export const Video = forwardRef<VideoRef, VideoProps>(
         const { debugMessage } = useDebug();
         const { handleVideoError, resetSpan } = useVideoError({ ref: elementRef });
         const [fadeInSpring, fadeInSpringApi] = useSpring(() => ({}));
+        const { getOrFetchAndCache } = useCacher();
 
         useImperativeHandle(ref, () => ({
             changeShow: (show: boolean) => {
@@ -36,11 +39,12 @@ export const Video = forwardRef<VideoRef, VideoProps>(
                     config: { duration: FADE_DURATION }
                 });
             },
-            setSrc: (src: string) => {
+            setSrc: async (src: string) => {
                 if (!elementRef.current) return;
-                elementRef.current.src = src;
+                const newSrc = await getOrFetchAndCache(src);
+                elementRef.current.src = newSrc;
             },
-            play: () => {
+            play: async () => {
                 if (!elementRef.current) return Promise.reject();
                 return elementRef.current.play();
             },
@@ -56,15 +60,19 @@ export const Video = forwardRef<VideoRef, VideoProps>(
             return props.onEnded?.(ev);
         }
 
-        return <animated.video
-            ref={elementRef}
-            onError={handleVideoError}
-            onEnded={onEnded}
-            onWaiting={() => debugMessage({ message: 'video waiting', severity: 'warning' })}
-            playsInline={true}
-            style={{
-                ...ItemBaseStyle,
-                ...fadeInSpring,
-            }}
-        />
+        return <>
+            <animated.video
+                ref={elementRef}
+                onError={handleVideoError}
+                onEnded={onEnded}
+                onWaiting={() => debugMessage({ message: 'video waiting', severity: 'warning' })}
+                playsInline={true}
+                style={{
+                    ...ItemBaseStyle,
+                    ...fadeInSpring,
+                }}
+                muted={props.muted}
+            // preload="auto"
+            />
+        </>
     });

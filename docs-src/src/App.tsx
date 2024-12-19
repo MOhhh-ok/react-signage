@@ -37,17 +37,20 @@ function Test() {
     const { preset } = usePreset();
     const [play, setPlay] = useState(false);
     const [fullScreen, setFullScreen] = useState(false);
+    const [mute, setMute] = useState(false);
 
     return <Stack direction="column" spacing={1}>
         <Stack direction="row" spacing={2}>
             <Button variant="contained" onClick={() => setPlay(!play)}>{play ? 'Stop' : 'Play'}</Button>
             <FormControlLabel label="FullScreen" control={<Switch checked={fullScreen} onChange={ev => setFullScreen(ev.target.checked)} />} />
+            <FormControlLabel label="Mute" control={<Switch checked={mute} onChange={ev => setMute(ev.target.checked)} />} />
         </Stack>
         <Signage
             items={preset.items}
             play={play}
             fullScreen={fullScreen}
             onFullScreenChange={isFullscreen => setFullScreen(isFullscreen)}
+            mute={mute}
         />
     </Stack>
 }
