@@ -59,14 +59,23 @@ export default function App() {
             items={items}
         />
 
-        <p>Preloader (Optional). Preload media files into browser cache. Note: May not work well with large video files.</p>
-        <PreloaderProvider items={items}>
-            <PreloaderMessage />
-            <div style={{ width: "150px", height: "100px", maxWidth: "150px", maxHeight: "100px" }}>
-                <PreloaderMedia />
-            </div>
-        </PreloaderProvider>
-
+        <p>Preloader (Optional). Preload media files into IndexedDB.</p>
+        <Cacher
+            items={cacheItems}
+            renderProgress={({ progress, queue }) => <div>
+                {queue.length > 0
+                    ? 'loading...'
+                    : 'done'
+                }
+                {progress?.progress
+                    && <>
+                        {progress.progress * 100}%
+                        <br />
+                        {progress.src}
+                    </>
+                }
+            </div>}
+        />
     </>
 }
 ```

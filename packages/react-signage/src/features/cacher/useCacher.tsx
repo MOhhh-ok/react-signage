@@ -11,29 +11,32 @@ export function useCacher() {
         resetDownloadingStatuses();
     }, []);
 
-    async function getOrFetchAndCache(url: string) {
-        const status = await db.mediaStatus.get(url);
+    async function getStatus(url: string) {
+        return await db.mediaStatus.get(url);
+    }
+
+    async function getOrFetchAndCache(url: string, ops?: Pick<AxiosRequestConfig, 'onDownloadProgress'>) {
+        const status = await getStatus(url);
         if (status?.status === 'success') {
             const data = await db.mediaData.get(url);
             if (data?.blob) {
                 return URL.createObjectURL(data.blob);
             }
         }
-        fetchAndCache(url);
+        fetchAndCache(url, ops);
         return url;
     }
 
     async function fetchAndCache(url: string, ops?: Pick<AxiosRequestConfig, 'onDownloadProgress'>) {
-        const status = await db.mediaStatus.get(url);
+        const status = await getStatus(url);
         if (status?.status === 'downloading') return;
         await updateMediaStatus(url, { status: 'downloading' });
 
         const res = await axios.get(url, {
             responseType: 'blob',
             ...ops,
-            // onDownloadProgress: (progress) =>  console.log(progress) 
         });
-        const blob = await res.data;
+        const blob = res.data;
         await upsertMediaData({ url, blob });
         await updateMediaStatus(url, { status: 'success', size: blob.size });
     }
@@ -47,5 +50,5 @@ export function useCacher() {
         }
     }
 
-    return { fetchAndCache, getOrFetchAndCache };
+    return { getStatus, fetchAndCache, getOrFetchAndCache };
 }

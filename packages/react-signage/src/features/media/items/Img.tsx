@@ -3,8 +3,11 @@ import { forwardRef, useImperativeHandle, useRef } from "react";
 import { FADE_DURATION } from '../../../consts';
 import { ItemBaseStyle } from './consts';
 import { MediaItemRefBase } from './types';
+import { useCacher } from '../../cacher';
+import { useDataStore } from '../../cacher/useDataStore';
+
 type Props = {
-    // style: CSSProperties
+    useDbCache?: boolean;
 }
 
 export interface ImgRef extends MediaItemRefBase {
@@ -13,8 +16,10 @@ export interface ImgRef extends MediaItemRefBase {
 
 export const Img = forwardRef<ImgRef, Props>(
     function Img(props, ref) {
+        const { useDbCache } = props;
         const elementRef = useRef<HTMLImageElement>(null);
         const [fadeInSpring, fadeInSpringApi] = useSpring(() => ({}));
+        const { getOrFetchAndCache } = useCacher();
 
         useImperativeHandle(ref, () => ({
             changeShow: (show: boolean) => {
@@ -30,7 +35,8 @@ export const Img = forwardRef<ImgRef, Props>(
             },
             setSrc: async (src: string) => {
                 if (!elementRef.current) return;
-                elementRef.current.src = src;
+                const newSrc = useDbCache ? await getOrFetchAndCache(src) : src;
+                elementRef.current.src = newSrc;
             },
             elementRef: elementRef
         }));

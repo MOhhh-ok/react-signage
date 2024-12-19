@@ -1,7 +1,7 @@
 import { animated, useSpring } from "@react-spring/web";
 import { VideoHTMLAttributes, forwardRef, useImperativeHandle, useRef } from "react";
 import { FADE_DURATION } from "../../../consts";
-import { useCacher } from "../../db";
+import { useCacher } from "../../cacher";
 import { useDebug } from "../../debug/useDebug";
 import { ItemBaseStyle } from "./consts";
 import { useVideoError } from "./hooks/useVideoError";

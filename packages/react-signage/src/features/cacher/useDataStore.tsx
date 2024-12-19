@@ -57,10 +57,6 @@ export function useDataStore() {
         });
     }
 
-    async function getTotalSize(): Promise<number> {
-        const statuses = await db.mediaStatus.toArray();
-        return statuses.reduce((acc, status) => acc + status.size, 0);
-    }
 
     return {
         upsertMediaData,
